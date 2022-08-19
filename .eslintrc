@@ -41,7 +41,9 @@
 
     // Use typescript's no-redeclare for compatibility with overrides
     "no-redeclare": "off",
-    "@typescript-eslint/no-redeclare": ["error"]
+    "@typescript-eslint/no-redeclare": ["error"],
+    "no-debugger": "off",
+    "no-console": "off"
   },
   "overrides": [
     {

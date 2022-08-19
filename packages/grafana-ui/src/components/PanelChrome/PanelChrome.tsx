@@ -56,6 +56,7 @@ export interface PanelChromeProps {
    * callback when opening the panel menu
    */
   onOpenMenu?: () => void;
+  style?: CSSProperties;
 }
 
 /**
@@ -87,6 +88,7 @@ export function PanelChrome({
   actions,
   onCancelQuery,
   onOpenMenu,
+  style
 }: PanelChromeProps) {
   const theme = useTheme2();
   const styles = useStyles2(getStyles);
@@ -104,7 +106,7 @@ export function PanelChrome({
     cursor: dragClass ? 'move' : 'auto',
   };
 
-  const containerStyles: CSSProperties = { width, height };
+  const containerStyles: CSSProperties = { width, height, ...style };
   if (displayMode === 'transparent') {
     containerStyles.backgroundColor = 'transparent';
     containerStyles.border = 'none';

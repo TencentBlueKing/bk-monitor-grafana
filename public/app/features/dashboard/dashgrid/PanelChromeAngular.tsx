@@ -20,6 +20,7 @@ import { getPanelChromeProps } from '../utils/getPanelChromeProps';
 
 import { PanelHeader } from './PanelHeader/PanelHeader';
 import { PanelHeaderMenuWrapperNew } from './PanelHeader/PanelHeaderMenuWrapper';
+import watermarkMaker from './watermarkMaker';
 
 interface OwnProps {
   panel: PanelModel;
@@ -200,7 +201,13 @@ export class PanelChromeAngularUnconnected extends PureComponent<Props, State> {
       'panel-content': true,
       'panel-content--no-padding': plugin.noPadding,
     });
-
+    const panelContentStyle: any = window.graphWatermark
+    ? {
+        backgroundImage: `url(${watermarkMaker(window.grafanaBootData.user.name)})`,
+        backgroundRepeat: 'repeat',
+        backgroundPosition: 'top',
+      }
+    : {};
     if (config.featureToggles.newPanelChromeUI) {
       // Shift the hover menu down if it's on the top row so it doesn't get clipped by topnav
       const hoverHeaderOffset = (panel.gridPos?.y ?? 0) === 0 ? -16 : undefined;
@@ -213,6 +220,7 @@ export class PanelChromeAngularUnconnected extends PureComponent<Props, State> {
 
       return (
         <PanelChrome
+          style={panelContentStyle}
           width={this.props.width}
           height={this.props.height}
           title={panelChromeProps.title}
@@ -237,6 +245,7 @@ export class PanelChromeAngularUnconnected extends PureComponent<Props, State> {
     } else {
       return (
         <div
+          style={panelContentStyle}
           className={containerClassNames}
           data-testid={selectors.components.Panels.Panel.title(panel.title)}
           aria-label={selectors.components.Panels.Panel.containerByTitle(panel.title)}

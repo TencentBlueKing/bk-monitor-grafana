@@ -55,6 +55,7 @@ import { PanelHeader } from './PanelHeader/PanelHeader';
 import { PanelHeaderMenuWrapperNew } from './PanelHeader/PanelHeaderMenuWrapper';
 import { seriesVisibilityConfigFactory } from './SeriesVisibilityConfigFactory';
 import { liveTimer } from './liveTimer';
+import watermarkMaker from './watermarkMaker';
 
 const DEFAULT_PLUGIN_ERROR = 'Error in plugin';
 
@@ -557,10 +558,16 @@ export class PanelStateWrapper extends PureComponent<Props, State> {
     this.eventFilter.onlyLocal = dashboard.graphTooltip === 0;
 
     const timeZone = this.props.timezone || this.props.dashboard.getTimezone();
-
+    const panelContentStyle = window.graphWatermark
+    ? {
+        backgroundImage: `url(${watermarkMaker(window.grafanaBootData.user.name)})`,
+        backgroundRepeat: 'repeat',
+        backgroundPosition: 'center',
+      }
+    : {};
     return (
       <>
-        <div className={panelContentClassNames}>
+        <div className={panelContentClassNames} style={panelContentStyle}>
           <PluginContextProvider meta={plugin.meta}>
             <PanelContextProvider value={this.state.context}>
               <PanelComponent

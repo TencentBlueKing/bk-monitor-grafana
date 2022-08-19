@@ -18,7 +18,9 @@
         "newlines-between": "always",
         "alphabetize": { "order": "asc" }
       }
-    ]
+    ],
+    "no-debugger": "off",
+    "no-console": "off"
   },
   "overrides": [
     {

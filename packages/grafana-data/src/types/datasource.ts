@@ -491,6 +491,7 @@ export interface DataQueryRequest<TQuery extends DataQuery = DataQuery> {
 
   // Explore state used by various datasources
   liveStreaming?: boolean;
+  panelType?: string;
 }
 
 export interface DataQueryTimings {

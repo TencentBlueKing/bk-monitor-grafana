@@ -33,9 +33,10 @@ export function DashboardSearch({ onCloseSearch }: Props) {
   useDebounce(() => onQueryChange(inputValue), 200, [inputValue]);
 
   const { onKeyDown, keyboardEvents } = useKeyNavigationListener();
-
   return (
-    <div tabIndex={0} className={styles.overlay}>
+    <div tabIndex={0} style={{
+      left: window.parent !== window ? '0px' : '57px'
+    }} className={styles.overlay}>
       <div className={styles.container}>
         <div className={styles.searchField}>
           <div>

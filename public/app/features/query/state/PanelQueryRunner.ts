@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { MonoTypeOperatorFunction, Observable, of, ReplaySubject, Unsubscribable } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
+// import { PanelModel } from 'app/features/dashboard/state';
 
 import {
   applyFieldOverrides,
@@ -233,6 +234,7 @@ export class PanelQueryRunner {
       scopedVars: scopedVars || {},
       cacheTimeout,
       startTime: Date.now(),
+      panelType: (this.dataConfigSource as PanelModel).type,
     };
 
     // Add deprecated property

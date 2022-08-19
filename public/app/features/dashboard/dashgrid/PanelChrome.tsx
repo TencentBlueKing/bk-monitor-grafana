@@ -39,6 +39,7 @@ import { loadSnapshotData } from '../utils/loadSnapshotData';
 import { PanelHeader } from './PanelHeader/PanelHeader';
 import { seriesVisibilityConfigFactory } from './SeriesVisibilityConfigFactory';
 import { liveTimer } from './liveTimer';
+import watermarkMaker from './watermarkMaker';
 
 const DEFAULT_PLUGIN_ERROR = 'Error in plugin';
 
@@ -460,10 +461,16 @@ export class PanelChrome extends PureComponent<Props, State> {
     // Update the event filter (dashboard settings may have changed)
     // Yes this is called ever render for a function that is triggered on every mouse move
     this.eventFilter.onlyLocal = dashboard.graphTooltip === 0;
-
+    const panelContentStyle = window.graphWatermark
+    ? {
+        backgroundImage: `url(${watermarkMaker(window.grafanaBootData.user.name)})`,
+        backgroundRepeat: 'repeat',
+        backgroundPosition: 'center',
+      }
+    : {};
     return (
       <>
-        <div className={panelContentClassNames}>
+        <div className={panelContentClassNames} style={panelContentStyle}>
           <PanelContextProvider value={this.state.context}>
             <PanelComponent
               id={panel.id}

@@ -108,6 +108,10 @@ export class DashboardSrv {
       if (this.dashboard && this.dashboard.id === dashboardId) {
         this.dashboard.meta.isStarred = res;
       }
+      // 点击收藏触发通知监控
+      if (window.parent !== window) {
+        window.parent.postMessage({ starredChange: dashboardId }, '*');
+      }
       return res;
     });
   }

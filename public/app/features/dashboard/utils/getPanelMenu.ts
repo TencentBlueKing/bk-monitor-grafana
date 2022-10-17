@@ -1,11 +1,10 @@
+import {cloneDeep} from 'lodash';
+
 import { PanelMenuItem } from '@grafana/data';
-import { AngularComponent, getDataSourceSrv, locationService, reportInteraction } from '@grafana/runtime';
+import { AngularComponent, locationService, reportInteraction } from '@grafana/runtime';
 import { LoadingState } from '@grafana/schema';
 import { PanelCtrl } from 'app/angular/panel/panel_ctrl';
-import config from 'app/core/config';
 import { t } from 'app/core/internationalization';
-import { contextSrv } from 'app/core/services/context_srv';
-import { getExploreUrl } from 'app/core/utils/explore';
 import { DashboardModel } from 'app/features/dashboard/state/DashboardModel';
 import { PanelModel } from 'app/features/dashboard/state/PanelModel';
 import {
@@ -19,11 +18,14 @@ import {
 } from 'app/features/dashboard/utils/panel';
 import { InspectTab } from 'app/features/inspector/types';
 import { isPanelModelLibraryPanel } from 'app/features/library-panels/guard';
-import { store } from 'app/store/store';
+// import { store } from 'app/store/store';
+// import { contextSrv } from '../../../core/services/context_srv';
+// import { getExploreUrl } from '../../../core/utils/explore';
+// import { navigateToExplore } from '../../explore/state/main';
 
-import { navigateToExplore } from '../../explore/state/main';
+import { getTemplateSrv } from '../../templating/template_srv';
 import { getTimeSrv } from '../services/TimeSrv';
-import _ from 'lodash';
+
 import { handleTransformOldQuery, buildWhereVariables, QueryData, QueryConfig, getMetricId } from './transfrom-targets';
 const bkmonitorDatasource = ['bkmonitor-timeseries-datasource', 'bkmonitor-event-datasource'];
 declare global {
@@ -101,12 +103,12 @@ export function getPanelMenu(
     removePanel(dashboard, panel, true);
   };
 
-  const onNavigateToExplore = (event: React.MouseEvent<any>) => {
-    event.preventDefault();
-    const openInNewWindow =
-      event.ctrlKey || event.metaKey ? (url: string) => window.open(`${config.appSubUrl}${url}`) : undefined;
-    store.dispatch(navigateToExplore(panel, { getDataSourceSrv, getTimeSrv, getExploreUrl, openInNewWindow }) as any);
-  };
+  // const onNavigateToExplore = (event: React.MouseEvent<any>) => {
+  //   event.preventDefault();
+  //   const openInNewWindow =
+  //     event.ctrlKey || event.metaKey ? (url: string) => window.open(`${config.appSubUrl}${url}`) : undefined;
+  //   store.dispatch(navigateToExplore(panel, { getDataSourceSrv, getTimeSrv, getExploreUrl, openInNewWindow }) as any);
+  // };
 
   const onToggleLegend = (event: React.MouseEvent) => {
     event.preventDefault();
@@ -122,7 +124,7 @@ export function getPanelMenu(
     const dataList: any[] = [];
     let metriIdMap: Record<string, string> = {};
     targetList.forEach((item: any) => {
-      let data: QueryData = _.cloneDeep(item);
+      let data: QueryData = cloneDeep(item);
       if (item?.data?.metric?.id?.length > 3) {
         data = handleTransformOldQuery(item.data);
       }
@@ -131,8 +133,16 @@ export function getPanelMenu(
           ...set,
           value: buildWhereVariables(set.value),
         }));
-        config.functions =
-          config.functions?.filter?.((item) => !['top', 'bottom', 'time_shift'].includes(item.id)) || [];
+        config.functions = config.functions?.filter?.((item) => item.id && !['top', 'bottom', 'time_shift'].includes(item.id))
+          .map(func => ({
+            ...func,
+            params: func.params?.map(set => ({
+              ...set,
+              value: typeof set.value === 'string'
+                ? getTemplateSrv().replace(set.value)
+                : set.value,
+            })),
+          })) || [];
         const metriId = getMetricId(
           config.data_source_label,
           config.data_type_label,
@@ -267,14 +277,14 @@ export function getPanelMenu(
     shortcut: 'p s',
   });
 
-  if (contextSrv.hasAccessToExplore() && !(panel.plugin && panel.plugin.meta.skipDataQuery)) {
-    menu.push({
-      text: t('panel.header-menu.explore', `Explore`),
-      iconClassName: 'compass',
-      onClick: onNavigateToExplore,
-      shortcut: 'x',
-    });
-  }
+  // if (contextSrv.hasAccessToExplore() && !(panel.plugin && panel.plugin.meta.skipDataQuery)) {
+  //   menu.push({
+  //     text: t('panel.header-menu.explore', `Explore`),
+  //     iconClassName: 'compass',
+  //     onClick: onNavigateToExplore,
+  //     shortcut: 'x',
+  //   });
+  // }
 
   const inspectMenu: PanelMenuItem[] = [];
 

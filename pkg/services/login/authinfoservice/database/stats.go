@@ -2,10 +2,11 @@ package database
 
 import (
 	"context"
+	"github.com/grafana/grafana/pkg/services/sqlstore"
+	"strings"
 	"sync"
 	"time"
 
-	"github.com/grafana/grafana/pkg/services/sqlstore"
 	"github.com/grafana/grafana/pkg/services/sqlstore/db"
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -87,7 +88,7 @@ func (s *AuthInfoStore) GetLoginStats(ctx context.Context) (LoginStats, error) {
 		login string
 		email string
 	}
-	outerErr := s.sqlStore.WithDbSession(ctx, func(dbSession *db.Session) error {
+	outerErr := s.sqlStore.WithDbSession(ctx, func(dbSession *sqlstore.DBSession) error {
 		sess := dbSession.Table("user").Cols("login", "email")
 		_, err := sess.Get(users)
 		return err

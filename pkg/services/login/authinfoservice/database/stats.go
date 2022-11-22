@@ -83,16 +83,44 @@ func (s *AuthInfoStore) RunMetricsCollection(ctx context.Context) error {
 
 func (s *AuthInfoStore) GetLoginStats(ctx context.Context) (LoginStats, error) {
 	var stats LoginStats
-	outerErr := s.sqlStore.WithDbSession(ctx, func(dbSession *sqlstore.DBSession) error {
-		rawSQL := `SELECT
-		(SELECT COUNT(*) FROM (` + s.duplicateUserEntriesSQL(ctx) + `) AS d WHERE (d.dup_login IS NOT NULL OR d.dup_email IS NOT NULL)) as duplicate_user_entries,
-		(SELECT COUNT(*) FROM (` + s.mixedCasedUsers(ctx) + `) AS mcu) AS mixed_cased_users
-		`
-		_, err := dbSession.SQL(rawSQL).Get(&stats)
+	var users []struct {
+		login string
+		email string
+	}
+	outerErr := s.sqlStore.WithDbSession(ctx, func(dbSession *db.Session) error {
+		sess := dbSession.Table("user").Cols("login", "email")
+		_, err := sess.Get(users)
 		return err
 	})
 	if outerErr != nil {
 		return stats, outerErr
+	}
+
+	emails, logins := make(map[string]bool), make(map[string]bool)
+	for _, user := range users {
+		emailLower, loginLower := strings.ToLower(user.email), strings.ToLower(user.login)
+
+		// this query counts how many users have upper case and lower case login or emails.
+		// why
+		// users login via IDP or service providers get upper cased domains at times :shrug:
+		if emailLower == user.email || loginLower == user.login {
+			stats.MixedCasedUsers += 1
+		}
+
+		// counts how many users have the same login or email.
+		if _, exists := emails[emailLower]; exists {
+			stats.DuplicateUserEntries += 1
+			continue
+		} else {
+			emails[emailLower] = true
+		}
+
+		if _, exists := logins[loginLower]; exists {
+			stats.DuplicateUserEntries += 1
+			continue
+		} else {
+			logins[loginLower] = true
+		}
 	}
 
 	// set prometheus metrics stats

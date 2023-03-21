@@ -32,7 +32,7 @@ export const PanelHeader: FC<Props> = ({ panel, error, isViewing, isEditing, dat
   const title = panel.getDisplayTitle();
   const className = cx('panel-header', !(isViewing || isEditing) ? 'grid-drag-handle' : '');
   const styles = useStyles2(panelStyles);
-
+  const viewOnly = !!window.__view_only;
   return (
     <>
       <PanelHeaderLoadingIndicator state={data.state} onClick={onCancelQuery} />
@@ -51,7 +51,7 @@ export const PanelHeader: FC<Props> = ({ panel, error, isViewing, isEditing, dat
               <ClickOutsideWrapper onClick={closeMenu} parent={document}>
                 <div className="panel-title">
                   <PanelHeaderNotices frames={data.series} panelId={panel.id} />
-                  {alertState ? (
+                  {!viewOnly && alertState ? (
                     <Icon
                       name={alertState === 'alerting' ? 'heart-break' : 'heart'}
                       className="icon-gf panel-alert-icon"
@@ -60,7 +60,7 @@ export const PanelHeader: FC<Props> = ({ panel, error, isViewing, isEditing, dat
                     />
                   ) : null}
                   <h2 className={styles.titleText}>{title}</h2>
-                  {!dashboard.meta.publicDashboardAccessToken && (
+                  {!viewOnly && !dashboard.meta.publicDashboardAccessToken && (
                     <div data-testid="panel-dropdown">
                       <Icon name="angle-down" className="panel-menu-toggle" />
                       {panelMenuOpen ? (
@@ -68,7 +68,7 @@ export const PanelHeader: FC<Props> = ({ panel, error, isViewing, isEditing, dat
                       ) : null}
                     </div>
                   )}
-                  {data.request && data.request.timeInfo && (
+                  {!viewOnly && data.request && data.request.timeInfo && (
                     <span className="panel-time-info">
                       <Icon name="clock-nine" size="sm" /> {data.request.timeInfo}
                     </span>

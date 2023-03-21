@@ -133,7 +133,9 @@ export const AnnotationEditorPlugin: React.FC<AnnotationEditorPluginProps> = ({ 
     },
     [bbox]
   );
-
+  if (window.__view_only) {
+    return <div />;
+  }
   return (
     <>
       {isAddingAnnotation && selection && bbox && (

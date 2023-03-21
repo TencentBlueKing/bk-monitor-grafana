@@ -118,12 +118,12 @@ export const DashNav = React.memo<Props>((props) => {
     const { dashboard, kioskMode } = props;
     const { canStar, canShare, isStarred } = dashboard.meta;
     const buttons: ReactNode[] = [];
-
+    const viewOnly = window.__view_only;
     if (kioskMode !== KioskMode.Off || isPlaylistRunning()) {
       return [];
     }
 
-    if (canStar) {
+    if (canStar && !viewOnly) {
       let desc = isStarred
         ? t({ id: 'dashboard.toolbar.unmark-favorite', message: 'Unmark as favorite' })
         : t({ id: 'dashboard.toolbar.mark-favorite', message: 'Mark as favorite' });
@@ -139,7 +139,7 @@ export const DashNav = React.memo<Props>((props) => {
       );
     }
 
-    if (canShare) {
+    if (canShare && !viewOnly) {
       buttons.push(
         <ModalsController key="button-share">
           {({ showModal, hideModal }) => (
@@ -227,24 +227,25 @@ export const DashNav = React.memo<Props>((props) => {
     const { snapshot } = dashboard;
     const snapshotUrl = snapshot && snapshot.originalUrl;
     const buttons: ReactNode[] = [];
-    const tvButton = (
+    const viewOnly = !!window.__view_only;
+    const tvButton = !viewOnly ? (
       <ToolbarButton
         tooltip={t({ id: 'dashboard.toolbar.tv-button', message: 'Cycle view mode' })}
         icon="monitor"
         onClick={onToggleTVMode}
         key="tv-button"
       />
-    );
+    ) : undefined;
 
     if (isPlaylistRunning()) {
       return [renderPlaylistControls(), renderTimeControls()];
     }
 
-    if (kioskMode === KioskMode.TV) {
+    if (kioskMode === KioskMode.TV && !viewOnly) {
       return [renderTimeControls(), tvButton];
     }
 
-    if (canEdit && !isFullscreen) {
+    if (canEdit && !isFullscreen && !viewOnly) {
       buttons.push(
         <ToolbarButton
           tooltip={t({ id: 'dashboard.toolbar.add-panel', message: 'Add panel' })}
@@ -255,7 +256,7 @@ export const DashNav = React.memo<Props>((props) => {
       );
     }
 
-    if (canSave && !isFullscreen) {
+    if (canSave && !isFullscreen && !viewOnly) {
       buttons.push(
         <ModalsController key="button-save">
           {({ showModal, hideModal }) => (
@@ -274,7 +275,7 @@ export const DashNav = React.memo<Props>((props) => {
       );
     }
 
-    if (snapshotUrl) {
+    if (snapshotUrl && !viewOnly) {
       buttons.push(
         <ToolbarButton
           tooltip={t({ id: 'dashboard.toolbar.open-original', message: 'Open original dashboard' })}
@@ -285,7 +286,7 @@ export const DashNav = React.memo<Props>((props) => {
       );
     }
 
-    if (showSettings) {
+    if (showSettings && !viewOnly) {
       buttons.push(
         <ToolbarButton
           tooltip={t({ id: 'dashboard.toolbar.settings', message: 'Dashboard settings' })}

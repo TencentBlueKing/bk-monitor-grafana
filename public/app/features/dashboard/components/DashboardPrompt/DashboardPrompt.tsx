@@ -100,7 +100,9 @@ export const DashboardPrompt = React.memo(({ dashboard }: Props) => {
 
       return true;
     }
-
+    if (window.__view_only) {
+      return true;
+    }
     if (ignoreChanges(dashboard, original)) {
       return true;
     }

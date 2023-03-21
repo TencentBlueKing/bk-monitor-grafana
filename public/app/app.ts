@@ -157,7 +157,7 @@ export class GrafanaApp {
         chrome: new AppChromeService(),
         config,
       };
-
+      window.__view_only = !!locationService.getSearch().get('view_only');
       ReactDOM.render(
         React.createElement(AppWrapper, {
           app: this,

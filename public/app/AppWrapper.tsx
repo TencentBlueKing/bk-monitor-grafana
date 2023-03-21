@@ -84,7 +84,7 @@ export class AppWrapper extends React.Component<AppWrapperProps, AppWrapperState
   }
 
   renderNavBar() {
-    if (config.isPublicDashboardView || !this.state.ready || config.featureToggles.topnav) {
+    if (window.__view_only || config.isPublicDashboardView || !this.state.ready || config.featureToggles.topnav) {
       return null;
     }
 

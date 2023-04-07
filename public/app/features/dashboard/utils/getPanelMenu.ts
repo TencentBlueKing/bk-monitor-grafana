@@ -27,6 +27,7 @@ import { getTimeSrv } from '../services/TimeSrv';
 
 import { handleTransformOldQuery, buildWhereVariables, QueryData, QueryConfig, getMetricId } from './transfrom-targets';
 const bkmonitorDatasource = ['bkmonitor-timeseries-datasource', 'bkmonitor-event-datasource'];
+const isEnLang = !!document.cookie?.includes('blueking_language=en')
 declare global {
   interface Window {
     grafanaBootData: any;
@@ -384,19 +385,19 @@ export function getPanelMenu(
         }
         canSetStrategy &&
           menu.push({
-            text: '添加策略',
+            text: !isEnLang ? '添加策略' : 'Add Strategy',
             iconClassName: 'fa fa-fw fa-road',
             onClick: onAddStrategy,
           });
       }
       !onlyPromql &&
         menu.push({
-          text: '数据检索',
+          text: !isEnLang ? '数据检索' : 'Data Search',
           iconClassName: 'fa fa-fw fa-signal',
           onClick: onDataRetrieval,
         });
       menu.push({
-        text: '相关告警',
+        text: !isEnLang ? '相关告警' : 'Related Alarms',
         iconClassName: 'fa fa-fw fa-exclamation-triangle',
         onClick: onRelateAlert,
       });

@@ -504,6 +504,7 @@ export interface DataQueryRequest<TQuery extends DataQuery = DataQuery> {
 
   // Make it possible to hide support queries from the inspector
   hideFromInspector?: boolean;
+  panelType?: string;
 }
 
 export interface DataQueryTimings {

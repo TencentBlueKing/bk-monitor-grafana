@@ -18,9 +18,10 @@ export function DashboardSearch({}: Props) {
   useEffect(() => stateManager.initStateFromUrl(), [stateManager]);
 
   const { onKeyDown, keyboardEvents } = useKeyNavigationListener();
-
   return (
-    <div className={styles.overlay}>
+    <div tabIndex={0} style={{
+      left: window.parent !== window ? '0px' : '57px'
+    }} className={styles.overlay}>
       <div className={styles.container}>
         <div className={styles.searchField}>
           <div>

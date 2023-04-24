@@ -226,6 +226,16 @@ export class BackendSrv implements BackendService {
           redirected,
           config: options,
         };
+        if (redirected && url?.indexOf('login') > -1) {
+          const loginHref = url.match(/http[^?]+/);
+          if (loginHref?.length) {
+            if (top === window) {
+              location.href = `${loginHref[0]}?c_url=${location.href}`;
+            } else {
+              window.parent.postMessage({ redirected: true, href: loginHref[0] || '' }, '*');
+            }
+          }
+        }
         return fetchResponse;
       }),
       share() // sharing this so we can split into success and failure and then merge back

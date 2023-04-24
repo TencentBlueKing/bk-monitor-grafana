@@ -68,6 +68,9 @@ const Navigation = ({ children }: { children: NavModelItem[] }) => {
       <SelectNav customCss="page-header__select-nav">{children}</SelectNav>
       <TabsBar className="page-header__tabs" hideBorder={true}>
         {children.map((child, index) => {
+          if (child.id && ['users', 'teams', 'apikeys', 'org-settings'].includes(child.id)) {
+            return undefined;
+          }
           return (
             !child.hideFromTabs && (
               <Tab

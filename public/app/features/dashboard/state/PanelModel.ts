@@ -511,6 +511,9 @@ export class PanelModel implements DataConfigSource, IPanelModel {
     if (newPlugin.onPanelMigration) {
       this.pluginVersion = getPluginVersion(newPlugin);
     }
+    setTimeout(() => {
+      this.refresh();
+    }, 300);
   }
 
   updateQueries(options: QueryGroupOptions) {

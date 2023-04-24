@@ -17,6 +17,7 @@ import { getTimeSrv, TimeSrv } from '../services/TimeSrv';
 import { DashboardModel, PanelModel } from '../state';
 
 import { PanelHeader } from './PanelHeader/PanelHeader';
+import watermarkMaker from './watermarkMaker';
 
 interface OwnProps {
   panel: PanelModel;
@@ -195,9 +196,17 @@ export class PanelChromeAngularUnconnected extends PureComponent<Props, State> {
       'panel-content': true,
       'panel-content--no-padding': plugin.noPadding,
     });
-
+    const panelContentStyle = window.graphWatermark
+    ? {
+        backgroundImage: `url(${watermarkMaker(window.grafanaBootData.user.name)})`,
+        backgroundRepeat: 'repeat',
+        backgroundPosition: 'top',
+      }
+    : {};
     return (
-      <div className={containerClassNames} aria-label={selectors.components.Panels.Panel.containerByTitle(panel.title)}>
+      <div style={panelContentStyle}
+        className={containerClassNames} 
+        aria-label={selectors.components.Panels.Panel.containerByTitle(panel.title)}>
         <PanelHeader
           panel={panel}
           dashboard={dashboard}

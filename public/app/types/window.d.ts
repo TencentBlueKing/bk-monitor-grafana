@@ -5,5 +5,6 @@ export declare global {
     __grafana_load_failed: () => void;
     public_cdn_path: string;
     nonce: string | undefined;
+    is_external: string | undefined;
   }
 }

@@ -353,6 +353,7 @@ export function getPanelMenu(
   if (dashboard.canEditPanel(panel)) { 
     // add custom menu 添加策略 、 数据检索
     if (
+      !window.is_external &&
       dashboard.canEditPanel(panel) &&
       panel.targets.length &&
       panel.targets.every(

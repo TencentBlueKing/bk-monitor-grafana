@@ -25,7 +25,7 @@ import { isPanelModelLibraryPanel } from 'app/features/library-panels/guard';
 import { getTemplateSrv } from '../../templating/template_srv';
 import { getTimeSrv } from '../services/TimeSrv';
 
-import { handleTransformOldQuery, buildWhereVariables, QueryData, QueryConfig, getMetricId } from './transfrom-targets';
+import { handleTransformOldQuery, buildWhereVariables, QueryData, QueryConfig, getMetricId, buildPromqlVariables } from './transfrom-targets';
 const bkmonitorDatasource = ['bkmonitor-timeseries-datasource', 'bkmonitor-event-datasource'];
 const isEnLang = !!document.cookie?.includes('blueking_language=en')
 declare global {
@@ -151,6 +151,9 @@ export function getPanelMenu(
             alias: data.alias,
           },
         ];
+      }
+      if(data.source?.length) {
+        data.source = buildPromqlVariables(data.source)
       }
       const { alias, display, expression, ...props } = data;
       dataList.push(props);
@@ -357,12 +360,13 @@ export function getPanelMenu(
       dashboard.canEditPanel(panel) &&
       panel.targets.length &&
       panel.targets.every(
-        (item: any) => bkmonitorDatasource.includes(item.datasourceId) || item?.query_configs?.length > 0
+        (item: any) => bkmonitorDatasource.includes(item.datasourceId) || item?.query_configs?.length > 0 || item?.source?.length > 10
       )
     ) {
       const onlyPromql = panel.targets.some((item: any) => item.only_promql);
+      const hasMetric =  panel.targets.some((item: any) => item.query_configs?.length)
       if (panel.targets.length < 2 && !onlyPromql) {
-        let canSetStrategy = true;
+        let canSetStrategy = hasMetric;
         // 监控时序多指标策略
         if ((panel.targets[0] as QueryData)?.query_configs?.length > 1) {
           const [{ query_configs }] = panel.targets as QueryData[];
@@ -397,7 +401,7 @@ export function getPanelMenu(
           iconClassName: 'fa fa-fw fa-signal',
           onClick: onDataRetrieval,
         });
-      menu.push({
+        hasMetric && menu.push({
         text: !isEnLang ? '相关告警' : 'Related Alarms',
         iconClassName: 'fa fa-fw fa-exclamation-triangle',
         onClick: onRelateAlert,

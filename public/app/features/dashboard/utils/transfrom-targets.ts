@@ -194,7 +194,20 @@ export const buildWhereVariables = (values: string[] | string) => {
     });
   return valList;
 };
-
+export const buildPromqlVariables = (promql: string) => {
+  return  getTemplateSrv().replace(promql || '', {}, (value: any, variable: any, formatValue: any) => {
+    if (Array.isArray(value)) {
+      const v = value
+        .map((v) => {
+          const val = JSON.stringify(formatValue(v, 'regex', variable));
+          return val.slice(1, val.length - 1);
+        })
+        .join('|');
+      return value.length > 1 ? `(${v})` : v;
+    }
+    return formatValue(Array.isArray(value) ? value[0] : value, 'glob', variable);
+  });
+}
 export const getMetricId = (
   data_source_label: string,
   data_type_label: string,

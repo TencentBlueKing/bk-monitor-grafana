@@ -6,17 +6,17 @@ export interface TargetItem {
 }
 
 export interface QueryData {
-  expression: string;
-  alias: string;
-  display: boolean;
-  query_configs: QueryConfig[];
-  refId: string;
-  host: TargetItem[];
-  module: TargetItem[];
-  cluster: TargetItem[];
-  only_promql?: boolean;
-  source?: string;
-  expressionList?: ExpresionItem[];
+  expression: string;        // 查询表达式
+  alias: string;             // 查询结果的别名
+  display: boolean;          // 是否显示查询结果
+  query_configs: QueryConfig[];  // 查询配置数组
+  refId: string;             // 查询的引用 ID
+  host: TargetItem[];        // 目标主机数组
+  module: TargetItem[];      // 目标模块数组
+  cluster: TargetItem[];     // 目标集群数组
+  only_promql?: boolean;     // 是否仅使用 PromQL 查询语言
+  source?: string;           // 数据源
+  expressionList?: ExpresionItem[];  // 表达式项数组
 }
 export interface ExpresionItem {
   expression: string;
@@ -32,7 +32,7 @@ export interface QueryConfig {
   filter_dict: {};
   functions: FunctionItem[];
   group_by: string[];
-  interval: number;
+  interval: number | 'auto';
   interval_unit: string;
   metric_field: string;
   method: string;
@@ -242,3 +242,40 @@ export const getMetricId = (
   }
   return '';
 };
+ /**
+  * @param inter 汇聚周期
+  * @param unit 单位
+  * @returns {number} 转换后的汇聚周期 单位固定 s
+  */
+export const repalceInterval = (inter: string | number, unit: string) => {
+ let interval: string | number = inter;
+ if (typeof interval === 'string' && interval !== 'auto') {
+   interval = +getTemplateSrv().replace(interval)
+     .replace(/(\d+)(.*)/, (match: string, p1: string, p2: string) => {
+       let str: string | number = p1 || '10';
+       switch (p2) {
+         case 'm':
+           str = +p1 * 60;
+           break;
+         case 'h':
+           str = +p1 * 60 * 60;
+           break;
+         case 'd':
+           str = +p1 * 60 * 60 * 24;
+           break;
+         case 'w':
+           str = +p1 * 60 * 60 * 24 * 7;
+           break;
+         default:
+           str = (+p1 || 10) * (unit === 'm' ? 60 : 1);
+           break;
+       }
+       return str.toString();
+     });
+ } else if (typeof interval === 'number') {
+   if (unit === 'm') {
+     interval = interval * 60;
+   }
+ }
+ return interval || (unit === 'm' ? 60 : 10);
+}

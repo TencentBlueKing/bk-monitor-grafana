@@ -25,7 +25,7 @@ import { isPanelModelLibraryPanel } from 'app/features/library-panels/guard';
 import { getTemplateSrv } from '../../templating/template_srv';
 import { getTimeSrv } from '../services/TimeSrv';
 
-import { handleTransformOldQuery, buildWhereVariables, QueryData, QueryConfig, getMetricId, buildPromqlVariables } from './transfrom-targets';
+import { handleTransformOldQuery, buildWhereVariables, QueryData, QueryConfig, getMetricId, buildPromqlVariables, repalceInterval } from './transfrom-targets';
 const bkmonitorDatasource = ['bkmonitor-timeseries-datasource', 'bkmonitor-event-datasource'];
 const isEnLang = !!document.cookie?.includes('blueking_language=en')
 declare global {
@@ -132,6 +132,8 @@ export function getPanelMenu(
                 : set.value,
             })),
           })) || [];
+        config.interval = repalceInterval(config.interval, config.interval_unit);
+        config.interval_unit = 's'
         const metriId = getMetricId(
           config.data_source_label,
           config.data_type_label,

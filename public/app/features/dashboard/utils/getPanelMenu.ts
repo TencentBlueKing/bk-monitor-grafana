@@ -34,7 +34,7 @@ import { navigateToExplore } from '../../explore/state/main';
 import { getTimeSrv } from '../services/TimeSrv';
 
 import { handleTransformOldQuery, buildWhereVariables, QueryData, QueryConfig, getMetricId } from './transfrom-targets';
-
+const lang = getBKlanguageCookie();
 const bkmonitorDatasource = ['bkmonitor-timeseries-datasource', 'bkmonitor-event-datasource'];
 declare global {
   interface Window {
@@ -388,7 +388,7 @@ export function getPanelMenu(
         }
         canSetStrategy &&
           menu.push({
-            text: '添加策略',
+            text: lang === 'en' ? 'Add Rule' : '添加策略',
             iconClassName: 'shield',
             // iconClassName: 'fa fa-fw fa-road',
             onClick: onAddStrategy,
@@ -396,12 +396,12 @@ export function getPanelMenu(
       }
       !onlyPromql &&
         menu.push({
-          text: '数据检索',
+          text: lang === 'en' ? 'Data Explore' : '数据检索',
           iconClassName: 'signal',
           onClick: onDataRetrieval,
         });
       menu.push({
-        text: '相关告警',
+        text: lang === 'en' ? 'Related Alert' : '相关告警',
         iconClassName: 'apps',
         onClick: onRelateAlert,
       });
@@ -525,4 +525,21 @@ function createExtensionContext(panel: PanelModel, dashboard: DashboardModel): P
     },
     targets: panel.targets,
   };
+}
+/**
+ * @description 获取蓝鲸平台语言
+ * @returns zh | en
+ */
+function getBKlanguageCookie() {
+  const cookieStr = document.cookie.split('; ').find((row) => row.startsWith('blueking_language='));
+  if (!cookieStr) {
+    return 'zh';
+  }
+
+  const lang = cookieStr.split('=').at(1);
+  if (!lang) {
+    return 'zh';
+  }
+
+  return lang;
 }

@@ -4,16 +4,16 @@ import { PanelMenuItem, PluginExtensionPoints, type PluginExtensionPanelContext 
 import {
   isPluginExtensionLink,
   AngularComponent,
-  getDataSourceSrv,
+  // getDataSourceSrv,
   getPluginExtensions,
   locationService,
   reportInteraction,
 } from '@grafana/runtime';
 import { PanelCtrl } from 'app/angular/panel/panel_ctrl';
-import config from 'app/core/config';
+// import config from 'app/core/config';
 import { t } from 'app/core/internationalization';
 import { contextSrv } from 'app/core/services/context_srv';
-import { getExploreUrl } from 'app/core/utils/explore';
+// import { getExploreUrl } from 'app/core/utils/explore';
 import { DashboardModel } from 'app/features/dashboard/state/DashboardModel';
 import { PanelModel } from 'app/features/dashboard/state/PanelModel';
 import {
@@ -27,10 +27,10 @@ import {
 } from 'app/features/dashboard/utils/panel';
 import { InspectTab } from 'app/features/inspector/types';
 import { isPanelModelLibraryPanel } from 'app/features/library-panels/guard';
-import { SHARED_DASHBOARD_QUERY } from 'app/plugins/datasource/dashboard';
-import { store } from 'app/store/store';
+// import { SHARED_DASHBOARD_QUERY } from 'app/plugins/datasource/dashboard';
+// import { store } from 'app/store/store';
 
-import { navigateToExplore } from '../../explore/state/main';
+// import { navigateToExplore } from '../../explore/state/main';
 import { getTimeSrv } from '../services/TimeSrv';
 
 import { handleTransformOldQuery, buildWhereVariables, QueryData, QueryConfig, getMetricId } from './transfrom-targets';
@@ -116,13 +116,13 @@ export function getPanelMenu(
     reportInteraction('dashboards_panelheader_menu', { item: 'remove' });
   };
 
-  const onNavigateToExplore = (event: React.MouseEvent<any>) => {
-    event.preventDefault();
-    const openInNewWindow =
-      event.ctrlKey || event.metaKey ? (url: string) => window.open(`${config.appSubUrl}${url}`) : undefined;
-    store.dispatch(navigateToExplore(panel, { getDataSourceSrv, getTimeSrv, getExploreUrl, openInNewWindow }) as any);
-    reportInteraction('dashboards_panelheader_menu', { item: 'explore' });
-  };
+  // const onNavigateToExplore = (event: React.MouseEvent<any>) => {
+  //   event.preventDefault();
+  //   const openInNewWindow =
+  //     event.ctrlKey || event.metaKey ? (url: string) => window.open(`${config.appSubUrl}${url}`) : undefined;
+  //   store.dispatch(navigateToExplore(panel, { getDataSourceSrv, getTimeSrv, getExploreUrl, openInNewWindow }) as any);
+  //   reportInteraction('dashboards_panelheader_menu', { item: 'explore' });
+  // };
 
   const onToggleLegend = (event: React.MouseEvent) => {
     event.preventDefault();
@@ -267,18 +267,18 @@ export function getPanelMenu(
     shortcut: 'p s',
   });
 
-  if (
-    contextSrv.hasAccessToExplore() &&
-    !(panel.plugin && panel.plugin.meta.skipDataQuery) &&
-    panel.datasource?.uid !== SHARED_DASHBOARD_QUERY
-  ) {
-    menu.push({
-      text: t('panel.header-menu.explore', `Explore`),
-      iconClassName: 'compass',
-      onClick: onNavigateToExplore,
-      shortcut: 'x',
-    });
-  }
+  // if (
+  //   contextSrv.hasAccessToExplore() &&
+  //   !(panel.plugin && panel.plugin.meta.skipDataQuery) &&
+  //   panel.datasource?.uid !== SHARED_DASHBOARD_QUERY
+  // ) {
+  //   menu.push({
+  //     text: t('panel.header-menu.explore', `Explore`),
+  //     iconClassName: 'compass',
+  //     onClick: onNavigateToExplore,
+  //     shortcut: 'x',
+  //   });
+  // }
 
   const inspectMenu: PanelMenuItem[] = [];
 
@@ -396,12 +396,12 @@ export function getPanelMenu(
       }
       !onlyPromql &&
         menu.push({
-          text: lang === 'en' ? 'Data Explore' : '数据检索',
-          iconClassName: 'signal',
+          text: lang === 'en' ? 'Explore' : '数据检索',
+          iconClassName: 'compass',
           onClick: onDataRetrieval,
         });
       menu.push({
-        text: lang === 'en' ? 'Related Alert' : '相关告警',
+        text: lang === 'en' ? 'Related Alarms' : '相关告警',
         iconClassName: 'apps',
         onClick: onRelateAlert,
       });

@@ -399,12 +399,12 @@ export function getPanelMenu(
       }
       !onlyPromql &&
         menu.push({
-          text: !isEnLang ? '数据检索' : 'Data Explore',
+          text: !isEnLang ? '数据检索' : 'Explore',
           iconClassName: 'fa fa-fw fa-signal',
           onClick: onDataRetrieval,
         });
         hasMetric && menu.push({
-        text: !isEnLang ? '相关告警' : 'Related Alert',
+        text: !isEnLang ? '相关告警' : 'Related Alarms',
         iconClassName: 'fa fa-fw fa-exclamation-triangle',
         onClick: onRelateAlert,
       });

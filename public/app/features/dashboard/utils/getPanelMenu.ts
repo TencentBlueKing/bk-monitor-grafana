@@ -392,19 +392,19 @@ export function getPanelMenu(
         }
         canSetStrategy &&
           menu.push({
-            text: !isEnLang ? '添加策略' : 'Add Strategy',
+            text: !isEnLang ? '添加策略' : 'Add Rule',
             iconClassName: 'fa fa-fw fa-road',
             onClick: onAddStrategy,
           });
       }
       !onlyPromql &&
         menu.push({
-          text: !isEnLang ? '数据检索' : 'Data Search',
+          text: !isEnLang ? '数据检索' : 'Data Explore',
           iconClassName: 'fa fa-fw fa-signal',
           onClick: onDataRetrieval,
         });
         hasMetric && menu.push({
-        text: !isEnLang ? '相关告警' : 'Related Alarms',
+        text: !isEnLang ? '相关告警' : 'Related Alert',
         iconClassName: 'fa fa-fw fa-exclamation-triangle',
         onClick: onRelateAlert,
       });

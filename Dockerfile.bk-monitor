@@ -1,0 +1,61 @@
+# syntax=docker/dockerfile:1
+
+ARG BASE_IMAGE=alpine:3.17
+ARG JS_IMAGE=node:18-alpine3.17
+ARG JS_PLATFORM=linux/amd64
+ARG GO_IMAGE=golang:1.20.4-alpine3.17
+
+ARG GO_SRC=go-builder
+ARG JS_SRC=js-builder
+
+FROM --platform=${JS_PLATFORM} ${JS_IMAGE} as js-builder
+
+ENV NODE_OPTIONS=--max_old_space_size=8000
+
+WORKDIR /tmp/grafana
+
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn .yarn
+COPY packages packages
+COPY plugins-bundled plugins-bundled
+
+RUN yarn install --immutable
+
+COPY tsconfig.json .eslintrc .editorconfig .browserslistrc .prettierrc.js babel.config.json .linguirc ./
+COPY public public
+COPY scripts scripts
+COPY emails emails
+
+ENV NODE_ENV production
+RUN yarn build
+
+RUN wget https://github.com/TencentBlueKing/bk-monitor-grafana-plugins/releases/latest/download/bkmonitor-event-datasource.zip -O /tmp/bkmonitor-event-datasource.zip \
+&& wget https://github.com/TencentBlueKing/bk-monitor-grafana-plugins/releases/latest/download/bkmonitor-timeseries-datasource.zip -O /tmp/bkmonitor-timeseries-datasource.zip \
+&& ls -al /tmp
+
+RUN mkdir plugins \
+&& unzip /tmp/bkmonitor-event-datasource.zip -d plugins/ \
+&& unzip /tmp/bkmonitor-timeseries-datasource.zip -d plugins/
+
+FROM bitnami/grafana:10.0.1
+
+# 安装第三方插件
+RUN grafana cli --pluginsDir "/opt/bitnami/grafana/plugins/" plugins install corpglory-progresslist-panel && \
+    grafana cli --pluginsDir "/opt/bitnami/grafana/plugins/" plugins install grafana-piechart-panel && \
+    grafana cli --pluginsDir "/opt/bitnami/grafana/plugins/" plugins install michaeldmoore-multistat-panel && \
+    grafana cli --pluginsDir "/opt/bitnami/grafana/plugins/" plugins install briangann-gauge-panel && \
+    grafana cli --pluginsDir "/opt/bitnami/grafana/plugins/" plugins install corpglory-progresslist-panel && \
+    grafana cli --pluginsDir "/opt/bitnami/grafana/plugins/" plugins install tencentcloud-monitor-app && \
+    grafana cli --pluginsDir "/opt/bitnami/grafana/plugins/" plugins install marcusolsson-calendar-panel && \
+    grafana cli --pluginsDir "/opt/bitnami/grafana/plugins/" plugins install agenty-flowcharting-panel
+
+USER root
+
+RUN rm -rf /opt/bitnami/grafana/public/
+COPY --from=js-builder /tmp/grafana/plugins/bkmonitor-event-datasource /opt/bitnami/grafana/plugins/
+COPY --from=js-builder /tmp/grafana/plugins/bkmonitor-timeseries-datasource /opt/bitnami/grafana/plugins/
+COPY --from=js-builder /tmp/grafana/public /opt/bitnami/grafana/public
+
+RUN chmod g+rwX /opt/bitnami
+
+USER 1001

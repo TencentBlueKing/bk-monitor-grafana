@@ -43,9 +43,9 @@ RUN grafana-cli --pluginsDir "/opt/bitnami/grafana/plugins/" plugins install cor
 USER root
 
 RUN rm -rf /opt/bitnami/grafana/public/
-COPY --from=js-builder /tmp/grafana/plugins/bkmonitor-event-datasource /opt/bitnami/grafana/plugins/
-COPY --from=js-builder /tmp/grafana/plugins/bkmonitor-timeseries-datasource /opt/bitnami/grafana/plugins/
-COPY --from=js-builder /tmp/grafana/public /opt/bitnami/grafana/public
+COPY --from=js-builder /grafana/plugins/bkmonitor-event-datasource /opt/bitnami/grafana/plugins/
+COPY --from=js-builder /grafana/plugins/bkmonitor-timeseries-datasource /opt/bitnami/grafana/plugins/
+COPY --from=js-builder /grafana/public /opt/bitnami/grafana/public
 
 RUN chmod g+rwX /opt/bitnami
 

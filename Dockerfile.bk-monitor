@@ -1,4 +1,6 @@
 FROM node:16-alpine3.15 as js-builder
+ARG event_datasource_version=1.0.291
+ARG timeseries_datasource_version=1.0.291
 
 ENV NODE_OPTIONS=--max_old_space_size=8000
 
@@ -20,8 +22,8 @@ COPY emails emails
 ENV NODE_ENV production
 RUN yarn build
 
-RUN wget https://github.com/TencentBlueKing/bk-monitor-grafana-plugins/releases/latest/download/bkmonitor-event-datasource.zip -O /tmp/bkmonitor-event-datasource.zip \
-&& wget https://github.com/TencentBlueKing/bk-monitor-grafana-plugins/releases/latest/download/bkmonitor-timeseries-datasource.zip -O /tmp/bkmonitor-timeseries-datasource.zip \
+RUN wget https://github.com/TencentBlueKing/bk-monitor-grafana-plugins/releases/download/${event_datasource_version}/bkmonitor-event-datasource.zip -O /tmp/bkmonitor-event-datasource.zip \
+&& wget https://github.com/TencentBlueKing/bk-monitor-grafana-plugins/releases/download/${timeseries_datasource_version}/bkmonitor-timeseries-datasource.zip -O /tmp/bkmonitor-timeseries-datasource.zip \
 && ls -al /tmp
 
 RUN mkdir plugins \

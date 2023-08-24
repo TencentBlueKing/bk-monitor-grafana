@@ -138,7 +138,7 @@ export function getPanelMenu(
           config.data_source_label,
           config.data_type_label,
           config.metric_field,
-          config.result_table_id,
+          config.data_label || config.result_table_id,
           config.index_set_id
         );
         metriId && (metriIdMap[metriId] = 'set');

@@ -169,3 +169,6 @@ public/locales/**/*.js
 deployment_tools_config.json
 
 .betterer.cache
+.codecc
+.idea
+.vscode

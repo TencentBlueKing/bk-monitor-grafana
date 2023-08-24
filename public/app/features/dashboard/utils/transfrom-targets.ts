@@ -28,6 +28,7 @@ export interface ExpresionItem {
 export interface QueryConfig {
   data_source_label: string;
   data_type_label: string;
+  data_label: string;
   result_table_label: string;
   filter_dict: {};
   functions: FunctionItem[];

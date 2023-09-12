@@ -17,7 +17,11 @@ const OrgProfile: FC<Props> = ({ onSubmit, orgName }) => {
   const canWriteOrg = contextSrv.hasPermission(AccessControlAction.OrgsWrite);
 
   return (
-    <Form defaultValues={{ orgName }} onSubmit={({ orgName }: FormDTO) => onSubmit(orgName)}>
+    <Form
+      style={{ display: 'none' }}
+      defaultValues={{ orgName }}
+      onSubmit={({ orgName }: FormDTO) => onSubmit(orgName)}
+    >
       {({ register }) => (
         <FieldSet label="Organization profile" disabled={!canWriteOrg}>
           <Field label="Organization name">

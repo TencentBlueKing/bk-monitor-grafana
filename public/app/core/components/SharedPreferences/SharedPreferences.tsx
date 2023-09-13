@@ -135,6 +135,10 @@ export class SharedPreferences extends PureComponent<Props, State> {
   onSubmitForm = async () => {
     const { homeDashboardUID, theme, timezone, weekStart, locale, queryHistory } = this.state;
     await this.service.update({ homeDashboardUID, theme, timezone, weekStart, locale, queryHistory });
+    if (top && top !== window) {
+      top.location.reload();
+      return;
+    }
     window.location.reload();
   };
 

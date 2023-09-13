@@ -15,17 +15,6 @@ html {
 //
 // Remove default margin.
 //
-body {
-  &.theme-dark {
-    background-color: #111217 !important;
-    h1, h2, h3, h4, h5, h6 { 
-      color: #63656e;
-    }
-  }
-  &.theme-light {
-    background-color: #f4f5f5 !important;
-  }
-}
 
 // HTML5 display definitions
 // ==========================================================================

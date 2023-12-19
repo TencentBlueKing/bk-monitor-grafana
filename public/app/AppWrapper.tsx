@@ -43,19 +43,37 @@ export function addBodyRenderHook(fn: ComponentType) {
 export function addPageBanner(fn: ComponentType) {
   pageBanners.push(fn);
 }
-
-export class AppWrapper extends React.Component<AppWrapperProps, AppWrapperState> {
+ export class AppWrapper extends React.Component<AppWrapperProps, AppWrapperState> {
   constructor(props: AppWrapperProps) {
     super(props);
     this.state = {};
+    
   }
 
   async componentDidMount() {
     await loadAndInitAngularIfEnabled();
     this.setState({ ready: true });
     $('.preloader').remove();
+    window.addEventListener('message', this.handleMessage)
   }
-
+  componentWillUnmount() {
+    window.removeEventListener('message', this.handleMessage)
+  }
+  handleMessage = (e: MessageEvent) => {
+    if(!e?.data) {return}
+    const history = this.props.app.context.location.getHistory()
+    if(e.data.route) {
+      history.push(e.data.route, {
+        search: e.data.search || '',
+      })
+    } else if(e.data === 'create') {
+      history.push('/dashboard/new')
+    } else if(e.data === 'folder') {
+      history.push('/dashboards/folder/new')
+    } else if(e.data === 'import') {
+      history.push('/dashboard/import')
+    }
+  }
   renderRoute = (route: RouteDescriptor) => {
     const roles = route.roles ? route.roles() : [];
 
@@ -156,3 +174,4 @@ export class AppWrapper extends React.Component<AppWrapperProps, AppWrapperState
     );
   }
 }
+

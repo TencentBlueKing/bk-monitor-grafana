@@ -73,20 +73,38 @@ export const DashboardPrompt = React.memo(({ dashboard }: Props) => {
 
     // Are we leaving panel edit & library panel?
     if (panelInEdit && panelInEdit.libraryPanel && panelInEdit.hasChanged && !search.has('editPanel')) {
+      window.parent.postMessage({ 
+        hasRoutePedding: true,
+        routeStatus: 'peddding'
+      }, '*');
       showModal(SaveLibraryPanelModal, {
         isUnsavedPrompt: true,
         panel: dashboard.panelInEdit as PanelModelWithLibraryPanel,
         folderId: dashboard.meta.folderId as number,
         onConfirm: () => {
+          window.parent.postMessage({ 
+            hasRoutePedding: true,
+            routeStatus: 'success'
+          }, '*');
           hideModal();
           moveToBlockedLocationAfterReactStateUpdate(location);
         },
         onDiscard: () => {
+          window.parent.postMessage({ 
+            hasRoutePedding: true,
+            routeStatus: 'discard'
+          }, '*');
           dispatch(discardPanelChanges());
           moveToBlockedLocationAfterReactStateUpdate(location);
           hideModal();
         },
-        onDismiss: hideModal,
+        onDismiss: () => {
+          window.parent.postMessage({ 
+            hasRoutePedding: true,
+            routeStatus: 'cancel'
+          }, '*');
+          hideModal()
+        },
       });
       return false;
     }
@@ -97,35 +115,61 @@ export const DashboardPrompt = React.memo(({ dashboard }: Props) => {
       if (panelInEdit && !search.has('editPanel')) {
         dispatch(exitPanelEditor());
       }
-
+      window.parent.postMessage({ 
+        hasRoutePedding: true,
+        routeStatus: 'success'
+      }, '*');
       return true;
     }
 
     if (ignoreChanges(dashboard, original)) {
+      window.parent.postMessage({ 
+        hasRoutePedding: true,
+        routeStatus: 'success'
+      }, '*');
       return true;
     }
 
     if (!hasChanges(dashboard, original)) {
+      window.parent.postMessage({ 
+        hasRoutePedding: true,
+        routeStatus: 'success'
+      }, '*');
       return true;
     }
-
+    window.parent.postMessage({ 
+      hasRoutePedding: true,
+      routeStatus: 'peddding'
+    }, '*');
     showModal(UnsavedChangesModal, {
       dashboard: dashboard,
       onSaveSuccess: () => {
+        window.parent.postMessage({ 
+          hasRoutePedding: true,
+          routeStatus: 'success'
+        }, '*');
         hideModal();
         moveToBlockedLocationAfterReactStateUpdate(location);
       },
       onDiscard: () => {
+        window.parent.postMessage({ 
+          hasRoutePedding: true,
+          routeStatus: 'discard'
+        }, '*');
         setState({ ...state, original: null });
         hideModal();
         moveToBlockedLocationAfterReactStateUpdate(location);
       },
-      onDismiss: hideModal,
+      onDismiss: () => {
+        window.parent.postMessage({ 
+          hasRoutePedding: true,
+          routeStatus: 'cancel'
+        }, '*');
+        hideModal();
+      },
     });
-
     return false;
   };
-
   return <Prompt when={true} message={onHistoryBlock} />;
 });
 

@@ -235,7 +235,6 @@ export class BackendSrv implements BackendService {
             }
           }
         } else if (status === 401 && top !== window &&  (data as any).login_url) {
-          console.info(data, '-----------');
           window.parent.postMessage({ status: 'login', login_url: (data as any).login_url }, '*');
         }
         return fetchResponse;

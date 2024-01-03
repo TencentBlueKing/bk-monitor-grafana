@@ -122,7 +122,7 @@ export function getPanelMenu(
           ...set,
           value: buildWhereVariables(set.value),
         }));
-        config.functions = config.functions?.filter?.((item) => item.id && !['top', 'bottom', 'time_shift'].includes(item.id))
+        config.functions = config.functions?.filter?.((item) => item.id && !['top', 'bottom'].includes(item.id))
           .map(func => ({
             ...func,
             params: func.params?.map(set => ({

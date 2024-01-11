@@ -134,14 +134,16 @@ export function getPanelMenu(
           })) || [];
         config.interval = repalceInterval(config.interval, config.interval_unit);
         config.interval_unit = 's'
-        const metriId = getMetricId(
-          config.data_source_label,
-          config.data_type_label,
-          config.metric_field,
-          config.data_label || config.result_table_id,
-          config.index_set_id
-        );
-        metriId && (metriIdMap[metriId] = 'set');
+        if(item.mode !== 'code') {
+          const metriId = getMetricId(
+            config.data_source_label,
+            config.data_type_label,
+            config.metric_field,
+            config.data_label || config.result_table_id,
+            config.index_set_id
+          );
+          metriId && (metriIdMap[metriId] = 'set');
+        }
         // metriId && (queryString += `${queryString.length ? ' or ' : ''}指标ID : ${metriId}`)
       });
       if (data.expression?.length) {

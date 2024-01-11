@@ -365,13 +365,19 @@ export function getPanelMenu(
       dashboard.canEditPanel(panel) &&
       panel.targets.length
     ) {
-      const targetList = panel.targets.filter((target) => target && !target.hide);
+      const targetList = panel.targets.filter((target) => target && !target.hide).map((item: any) => {
+        let data: QueryData = cloneDeep(item);
+        // 处理老版本数据
+        if (item.data?.metric?.id?.length > 3) {
+          data = handleTransformOldQuery(item.data);
+        }
+        return data;
+      });
       const strategySubMenu: PanelMenuItem[] = [];
       const dataRetrievalSubMenu: PanelMenuItem[] = [];
       const alertSubMenu: PanelMenuItem[] = [];
       targetList.forEach((target: any) => {
-        // const onlyPromql = target.only_promql;
-        if((target.mode === 'code' && target.source?.length) || target.query_configs?.length) {
+        if(((target.mode === 'code' || target.only_promql) && target.source?.length) || target.query_configs?.length) {
             strategySubMenu.push({
               text: 'Query ' + (target.refId || target.source),
               onClick: (event: React.MouseEvent<any>) => {

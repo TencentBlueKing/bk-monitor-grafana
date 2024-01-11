@@ -170,31 +170,36 @@ export function getPanelMenu(
     };
   };
   //  添加策略事件
-  const onAddStrategy = (event: React.MouseEvent<any>) => {
-    event.preventDefault();
-    const targetList = (panel.targets as any[]).filter((target) => target && !target.hide);
-    if (targetList.length > 1) {
-      return;
-    }
-    const { dataList } = buildUrlParams(targetList);
+  const onAddStrategy = (target: any) => {
+    const { dataList } = buildUrlParams([target]);
     console.info('新增策略参数：', dataList);
     if (dataList?.length) {
-      const monitorUrl = `${location.href.split('/grafana')[0]}/?bizId=${
-        (window.grafanaBootData as any).user.orgName
-      }#/strategy-config/add?data=${encodeURIComponent(JSON.stringify(dataList[0]))}`;
+      const [dataItem] = dataList
+      let monitorUrl = ''
+      // promql
+      if(dataItem?.mode === 'code' && dataItem?.source?.length) {
+        monitorUrl =  `${location.href.split('/grafana')[0]}/?bizId=${
+          (window.grafanaBootData as any).user.orgName
+        }#/strategy-config/add?mode=code&data=${encodeURIComponent(JSON.stringify([{
+          promql: dataItem.source,
+          step: dataItem.step || 60
+        }]))}`;
+      } else {
+         monitorUrl = `${location.href.split('/grafana')[0]}/?bizId=${
+          (window.grafanaBootData as any).user.orgName
+        }#/strategy-config/add?data=${encodeURIComponent(JSON.stringify(dataList[0]))}`;
+      }
       console.info(monitorUrl);
       window.open(monitorUrl);
     }
   };
   //  数据检索事件
-  const onDataRetrieval = (event: React.MouseEvent<any>) => {
-    event.preventDefault();
-    const targetList = (panel.targets as any[]).filter((target) => target && !target.hide);
-    const { dataList } = buildUrlParams(targetList);
+  const onDataRetrieval = (target: any) => {
+    const { dataList } = buildUrlParams([target]);
     const dataItem = dataList?.[0].query_configs?.[0];
     let monitorRoutePath = 'data-retrieval';
     if (dataItem) {
-      if (dataItem.data_type_label === 'time_series') {
+      if (target?.mode === 'code' || dataItem.data_type_label === 'time_series') {
         monitorRoutePath = 'data-retrieval';
       } else if (
         dataItem.data_type_label === 'event' ||
@@ -215,18 +220,16 @@ export function getPanelMenu(
       window.open(monitorUrl);
     }
   };
-  const onRelateAlert = (event: React.MouseEvent<any>) => {
-    event.preventDefault();
-    const targetList = (panel.targets as any[]).filter((target) => target && !target.hide);
-    const { queryString } = buildUrlParams(targetList);
+  const onRelateAlert = (target: any) => {
+    const { queryString, dataList } = buildUrlParams([target]);
     // console.info(dataList);
-    if (queryString.length) {
+    if (queryString.length || dataList?.length) {
       const {
         time: { from, to },
       } = getTimeSrv();
       const monitorUrl = `${location.href.split('/grafana')[0]}/?bizId=${
         (window.grafanaBootData as any).user.orgName
-      }#/event-center?queryString=${queryString}&from=${from?.format?.('YYYY-MM-DD HH:mm:ss') || from}&to=${
+      }#/event-center?queryString=${queryString}&promql=${target.mode === 'code' && dataList[0]?.source ? dataList[0].source : ''}&from=${from?.format?.('YYYY-MM-DD HH:mm:ss') || from}&to=${
         to?.format?.('YYYY-MM-DD HH:mm:ss') || to
       }`;
       // console.info(monitorUrl);
@@ -360,54 +363,101 @@ export function getPanelMenu(
     if (
       !window.is_external &&
       dashboard.canEditPanel(panel) &&
-      panel.targets.length &&
-      panel.targets.every(
-        (item: any) => bkmonitorDatasource.includes(item.datasourceId) || item?.query_configs?.length > 0 || item?.source?.length > 10
-      )
+      panel.targets.length
     ) {
-      const onlyPromql = panel.targets.some((item: any) => item.only_promql);
-      const hasMetric =  panel.targets.some((item: any) => item.query_configs?.length)
-      if (panel.targets.length < 2 && !onlyPromql) {
-        let canSetStrategy = hasMetric;
-        // 监控时序多指标策略
-        if ((panel.targets[0] as QueryData)?.query_configs?.length > 1) {
-          const [{ query_configs }] = panel.targets as QueryData[];
-          const hasSpecialCMDBDimension = (data: QueryConfig) => {
-            return (
-              data.data_source_label === 'bk_monitor' &&
-              data.data_type_label === 'time_series' &&
-              (data.group_by.some((dim) => ['bk_inst_id', 'bk_obj_id'].includes(dim)) ||
-                data.where.some((condition) => ['bk_inst_id', 'bk_obj_id'].includes(condition.key)))
-            );
-          };
-          canSetStrategy = query_configs.every((item) => {
-            return (
-              ['bk_monitor|time_series', 'custom|time_series'].includes(
-                `${item.data_source_label}|${item.data_type_label}`
-              ) &&
-              !item.result_table_id.match(/^uptimecheck/i) &&
-              !hasSpecialCMDBDimension(item)
-            );
-          });
+      const targetList = panel.targets.filter((target) => target && !target.hide);
+      const strategySubMenu: PanelMenuItem[] = [];
+      const dataRetrievalSubMenu: PanelMenuItem[] = [];
+      const alertSubMenu: PanelMenuItem[] = [];
+      targetList.forEach((target: any) => {
+        // const onlyPromql = target.only_promql;
+        if((target.mode === 'code' && target.source?.length) || target.query_configs?.length) {
+            strategySubMenu.push({
+              text: 'Query ' + (target.refId || target.source),
+              onClick: (event: React.MouseEvent<any>) => {
+                event.preventDefault();
+                onAddStrategy(target)
+              },
+            })
+            dataRetrievalSubMenu.push({
+              text: 'Query ' + (target.refId || target.source),
+              onClick: (event: React.MouseEvent<any>) => {
+                event.preventDefault();
+                onDataRetrieval(target)
+              },
+            })
+            alertSubMenu.push({
+              text: 'Query ' + (target.refId || target.source),
+              onClick: (event: React.MouseEvent<any>) => {
+                event.preventDefault();
+                onRelateAlert(target)
+              },
+            })
         }
-        canSetStrategy &&
-          menu.push({
-            text: !isEnLang ? '添加策略' : 'Add Rule',
-            iconClassName: 'fa fa-fw fa-road',
-            onClick: onAddStrategy,
-          });
-      }
-      !onlyPromql &&
+      })
+      strategySubMenu.length && menu.push({
+        type: strategySubMenu.length > 1 ? 'submenu' : undefined,
+        text: !isEnLang ? '添加策略' : 'Add Rule',
+        iconClassName: 'fa fa-fw fa-road',
+        ...(strategySubMenu.length > 1 ? {subMenu: strategySubMenu} : {onClick: strategySubMenu[0].onClick})
+      });
+      dataRetrievalSubMenu.length &&
         menu.push({
+          type: dataRetrievalSubMenu.length > 1 ? 'submenu' : undefined,
           text: !isEnLang ? '数据检索' : 'Explore',
           iconClassName: 'fa fa-fw fa-signal',
-          onClick: onDataRetrieval,
-        });
-        hasMetric && menu.push({
+          ...(dataRetrievalSubMenu.length > 1 ? {subMenu: dataRetrievalSubMenu} : {onClick: dataRetrievalSubMenu[0].onClick})
+      });
+      alertSubMenu.length && menu.push({
+        type: alertSubMenu.length > 1 ? 'submenu' : undefined,
         text: !isEnLang ? '相关告警' : 'Related Alarms',
         iconClassName: 'fa fa-fw fa-exclamation-triangle',
-        onClick: onRelateAlert,
+        ...(alertSubMenu.length > 1 ? {subMenu: alertSubMenu} : {onClick: alertSubMenu[0].onClick})
       });
+      // const onlyPromql = targetList.some((item: any) => item.only_promql);
+      // const hasMetric =  targetList.some((item: any) => item.query_configs?.length || (item.mode === 'code' && item.source?.length));
+      // if (targetList.length < 2 && !onlyPromql) {
+      //   let canSetStrategy = hasMetric;
+      //   const [target] = targetList as QueryData[];
+      //   // 监控时序多指标策略
+      //   if (target?.query_configs?.length > 1) {
+      //     const [{ query_configs }] = targetList as QueryData[];
+      //     const hasSpecialCMDBDimension = (data: QueryConfig) => {
+      //       return (
+      //         data.data_source_label === 'bk_monitor' &&
+      //         data.data_type_label === 'time_series' &&
+      //         (data.group_by.some((dim) => ['bk_inst_id', 'bk_obj_id'].includes(dim)) ||
+      //           data.where.some((condition) => ['bk_inst_id', 'bk_obj_id'].includes(condition.key)))
+      //       );
+      //     };
+      //     canSetStrategy = query_configs.every((item) => {
+      //       return (
+      //         ['bk_monitor|time_series', 'custom|time_series'].includes(
+      //           `${item.data_source_label}|${item.data_type_label}`
+      //         ) &&
+      //         !item.result_table_id.match(/^uptimecheck/i) &&
+      //         !hasSpecialCMDBDimension(item)
+      //       );
+      //     });
+      //   }
+      //   canSetStrategy &&
+      //     menu.push({
+      //       text: !isEnLang ? '添加策略' : 'Add Rule',
+      //       iconClassName: 'fa fa-fw fa-road',
+      //       onClick: onAddStrategy,
+      //     });
+      // }
+      // !onlyPromql &&
+      //   menu.push({
+      //     text: !isEnLang ? '数据检索' : 'Explore',
+      //     iconClassName: 'fa fa-fw fa-signal',
+      //     onClick: onDataRetrieval,
+      //   });
+      //   hasMetric && menu.push({
+      //   text: !isEnLang ? '相关告警' : 'Related Alarms',
+      //   iconClassName: 'fa fa-fw fa-exclamation-triangle',
+      //   onClick: onRelateAlert,
+      // });
     }
   }
   // add old angular panel options

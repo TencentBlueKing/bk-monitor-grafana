@@ -180,10 +180,13 @@ export function getPanelMenu(
       if(dataItem?.mode === 'code' && dataItem?.source?.length) {
         monitorUrl =  `${location.href.split('/grafana')[0]}/?bizId=${
           (window.grafanaBootData as any).user.orgName
-        }#/strategy-config/add?mode=code&data=${encodeURIComponent(JSON.stringify([{
-          promql: dataItem.source,
-          step: dataItem.step || 60
-        }]))}`;
+        }#/strategy-config/add?mode=code&data=${encodeURIComponent(JSON.stringify({
+          mode: 'code',
+          data: [{
+            promql: dataItem.source,
+            step: dataItem.step || 60
+          }]
+        }))}`;
       } else {
          monitorUrl = `${location.href.split('/grafana')[0]}/?bizId=${
           (window.grafanaBootData as any).user.orgName

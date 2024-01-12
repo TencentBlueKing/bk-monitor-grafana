@@ -117,7 +117,7 @@ export function getPanelMenu(
       if (item?.data?.metric?.id?.length > 3) {
         data = handleTransformOldQuery(item.data);
       }
-      data.query_configs.forEach((config) => {
+      data.query_configs?.forEach?.((config) => {
         config.where = config.where?.map((set) => ({
           ...set,
           value: buildWhereVariables(set.value),

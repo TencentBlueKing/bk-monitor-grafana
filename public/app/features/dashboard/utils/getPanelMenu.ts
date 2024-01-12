@@ -376,7 +376,10 @@ export function getPanelMenu(
         if (item.data?.metric?.id?.length > 3) {
           data = handleTransformOldQuery(item.data);
         }
-        return data;
+        return {
+          ...data,
+          mode: (item.mode === 'code' || item.only_promql) ? 'code' : 'ui',
+        };
       });
       const strategySubMenu: PanelMenuItem[] = [];
       const dataRetrievalSubMenu: PanelMenuItem[] = [];

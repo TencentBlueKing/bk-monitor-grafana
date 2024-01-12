@@ -17,6 +17,7 @@ export interface QueryData {
   only_promql?: boolean;     // 是否仅使用 PromQL 查询语言
   source?: string;           // 数据源
   expressionList?: ExpresionItem[];  // 表达式项数组
+  mode: string;              // 查询模式
 }
 export interface ExpresionItem {
   expression: string;
@@ -108,6 +109,7 @@ export const handleTransformOldQuery = (data: any) => {
     refId: 'a',
     query_configs: config,
     ...handleTransformOldTarget(data),
+    mode: (data.mode === 'code' || data.only_promql) ? 'code' : 'ui',
   };
   return newQuery;
 };

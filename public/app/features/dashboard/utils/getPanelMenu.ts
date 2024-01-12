@@ -234,10 +234,10 @@ export function getPanelMenu(
       } = getTimeSrv();
       const monitorUrl = `${location.href.split('/grafana')[0]}/?bizId=${
         (window.grafanaBootData as any).user.orgName
-      }#/event-center?queryString=${queryString}&promql=${target.mode === 'code' && dataList[0]?.source ? dataList[0].source : ''}&from=${from?.format?.('YYYY-MM-DD HH:mm:ss') || from}&to=${
+      }#/event-center?queryString=${encodeURIComponent(queryString)}&promql=${target.mode === 'code' && dataList[0]?.source ? encodeURIComponent(dataList[0].source) : ''}&from=${from?.format?.('YYYY-MM-DD HH:mm:ss') || from}&to=${
         to?.format?.('YYYY-MM-DD HH:mm:ss') || to
       }`;
-      // console.info(monitorUrl);
+      console.info(monitorUrl);
       window.open(monitorUrl);
     }
   };

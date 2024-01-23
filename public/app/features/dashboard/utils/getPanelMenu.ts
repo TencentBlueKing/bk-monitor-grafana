@@ -26,7 +26,7 @@ import { getTemplateSrv } from '../../templating/template_srv';
 import { getTimeSrv } from '../services/TimeSrv';
 
 import { handleTransformOldQuery, buildWhereVariables, QueryData, getMetricId, buildPromqlVariables, repalceInterval } from './transfrom-targets';
-// const bkmonitorDatasource = ['bkmonitor-timeseries-datasource', 'bkmonitor-event-datasource'];
+const bkmonitorDatasource = ['bkmonitor-timeseries-datasource', 'bkmonitor-event-datasource'];
 const isEnLang = !!document.cookie?.includes('blueking_language=en')
 declare global {
   interface Window {
@@ -385,6 +385,11 @@ export function getPanelMenu(
       const dataRetrievalSubMenu: PanelMenuItem[] = [];
       const alertSubMenu: PanelMenuItem[] = [];
       targetList.forEach((target: any) => {
+        if(target?.datasource?.type) {
+          if(!bkmonitorDatasource.includes(target.datasource.type)) {
+            return;
+          }
+        }
         if(((target.mode === 'code' || target.only_promql) && target.source?.length) || target.query_configs?.length) {
             strategySubMenu.push({
               text: 'Query ' + (target.refId || target.source),

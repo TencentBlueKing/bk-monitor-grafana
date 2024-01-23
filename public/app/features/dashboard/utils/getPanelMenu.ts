@@ -25,8 +25,8 @@ import { isPanelModelLibraryPanel } from 'app/features/library-panels/guard';
 import { getTemplateSrv } from '../../templating/template_srv';
 import { getTimeSrv } from '../services/TimeSrv';
 
-import { handleTransformOldQuery, buildWhereVariables, QueryData, QueryConfig, getMetricId, buildPromqlVariables, repalceInterval } from './transfrom-targets';
-const bkmonitorDatasource = ['bkmonitor-timeseries-datasource', 'bkmonitor-event-datasource'];
+import { handleTransformOldQuery, buildWhereVariables, QueryData, getMetricId, buildPromqlVariables, repalceInterval } from './transfrom-targets';
+// const bkmonitorDatasource = ['bkmonitor-timeseries-datasource', 'bkmonitor-event-datasource'];
 const isEnLang = !!document.cookie?.includes('blueking_language=en')
 declare global {
   interface Window {
@@ -117,7 +117,7 @@ export function getPanelMenu(
       if (item?.data?.metric?.id?.length > 3) {
         data = handleTransformOldQuery(item.data);
       }
-      data.query_configs.forEach((config) => {
+      data.query_configs?.forEach?.((config) => {
         config.where = config.where?.map((set) => ({
           ...set,
           value: buildWhereVariables(set.value),
@@ -134,14 +134,16 @@ export function getPanelMenu(
           })) || [];
         config.interval = repalceInterval(config.interval, config.interval_unit);
         config.interval_unit = 's'
-        const metriId = getMetricId(
-          config.data_source_label,
-          config.data_type_label,
-          config.metric_field,
-          config.data_label || config.result_table_id,
-          config.index_set_id
-        );
-        metriId && (metriIdMap[metriId] = 'set');
+        if(item.mode !== 'code') {
+          const metriId = getMetricId(
+            config.data_source_label,
+            config.data_type_label,
+            config.metric_field,
+            config.data_label || config.result_table_id,
+            config.index_set_id
+          );
+          metriId && (metriIdMap[metriId] = 'set');
+        }
         // metriId && (queryString += `${queryString.length ? ' or ' : ''}指标ID : ${metriId}`)
       });
       if (data.expression?.length) {
@@ -180,10 +182,13 @@ export function getPanelMenu(
       if(dataItem?.mode === 'code' && dataItem?.source?.length) {
         monitorUrl =  `${location.href.split('/grafana')[0]}/?bizId=${
           (window.grafanaBootData as any).user.orgName
-        }#/strategy-config/add?mode=code&data=${encodeURIComponent(JSON.stringify([{
-          promql: dataItem.source,
-          step: dataItem.step || 60
-        }]))}`;
+        }#/strategy-config/add?mode=code&data=${encodeURIComponent(JSON.stringify({
+          mode: 'code',
+          data: [{
+            promql: dataItem.source,
+            step: dataItem.step || 60
+          }]
+        }))}`;
       } else {
          monitorUrl = `${location.href.split('/grafana')[0]}/?bizId=${
           (window.grafanaBootData as any).user.orgName
@@ -229,10 +234,10 @@ export function getPanelMenu(
       } = getTimeSrv();
       const monitorUrl = `${location.href.split('/grafana')[0]}/?bizId=${
         (window.grafanaBootData as any).user.orgName
-      }#/event-center?queryString=${queryString}&promql=${target.mode === 'code' && dataList[0]?.source ? dataList[0].source : ''}&from=${from?.format?.('YYYY-MM-DD HH:mm:ss') || from}&to=${
+      }#/event-center?queryString=${encodeURIComponent(queryString)}&promql=${target.mode === 'code' && dataList[0]?.source ? encodeURIComponent(dataList[0].source) : ''}&from=${from?.format?.('YYYY-MM-DD HH:mm:ss') || from}&to=${
         to?.format?.('YYYY-MM-DD HH:mm:ss') || to
       }`;
-      // console.info(monitorUrl);
+      console.info(monitorUrl);
       window.open(monitorUrl);
     }
   };
@@ -365,13 +370,22 @@ export function getPanelMenu(
       dashboard.canEditPanel(panel) &&
       panel.targets.length
     ) {
-      const targetList = panel.targets.filter((target) => target && !target.hide);
+      const targetList = panel.targets.filter((target) => target && !target.hide).map((item: any) => {
+        let data: QueryData = cloneDeep(item);
+        // 处理老版本数据
+        if (item.data?.metric?.id?.length > 3) {
+          data = handleTransformOldQuery(item.data);
+        }
+        return {
+          ...data,
+          mode: (item.mode === 'code' || item.only_promql) ? 'code' : 'ui',
+        };
+      });
       const strategySubMenu: PanelMenuItem[] = [];
       const dataRetrievalSubMenu: PanelMenuItem[] = [];
       const alertSubMenu: PanelMenuItem[] = [];
       targetList.forEach((target: any) => {
-        // const onlyPromql = target.only_promql;
-        if((target.mode === 'code' && target.source?.length) || target.query_configs?.length) {
+        if(((target.mode === 'code' || target.only_promql) && target.source?.length) || target.query_configs?.length) {
             strategySubMenu.push({
               text: 'Query ' + (target.refId || target.source),
               onClick: (event: React.MouseEvent<any>) => {

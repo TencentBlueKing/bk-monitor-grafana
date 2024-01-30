@@ -379,6 +379,7 @@ export function getPanelMenu(
         return {
           ...data,
           mode: (item.mode === 'code' || item.only_promql) ? 'code' : 'ui',
+          refId: item.refId
         };
       });
       const strategySubMenu: PanelMenuItem[] = [];

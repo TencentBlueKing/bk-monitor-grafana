@@ -13,12 +13,12 @@ import {
   sceneGraph,
 } from '@grafana/scenes';
 import { Tab, TabContent, TabsBar } from '@grafana/ui';
-import { shouldShowAlertingTab } from 'app/features/dashboard/components/PanelEditor/state/selectors';
+// import { shouldShowAlertingTab } from 'app/features/dashboard/components/PanelEditor/state/selectors';
 
 import { ShareQueryDataProvider } from '../../scene/ShareQueryDataProvider';
 import { VizPanelManager } from '../VizPanelManager';
 
-import { PanelDataAlertingTab } from './PanelDataAlertingTab';
+// import { PanelDataAlertingTab } from './PanelDataAlertingTab';
 import { PanelDataQueriesTab } from './PanelDataQueriesTab';
 import { PanelDataTransformationsTab } from './PanelDataTransformationsTab';
 import { PanelDataPaneTab } from './types';
@@ -139,9 +139,9 @@ export class PanelDataPane extends SceneObjectBase<PanelDataPaneState> {
 
         tabs.push(new PanelDataTransformationsTab(this.panelManager));
 
-        if (shouldShowAlertingTab(plugin)) {
-          tabs.push(new PanelDataAlertingTab(this.panelManager));
-        }
+        // if (shouldShowAlertingTab(plugin)) {
+        //   tabs.push(new PanelDataAlertingTab(this.panelManager));
+        // }
       }
     }
 

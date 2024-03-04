@@ -93,6 +93,10 @@ export class SharedPreferences extends PureComponent<Props, State> {
     if (confirmationResult) {
       const { homeDashboardUID, theme, timezone, weekStart, language, queryHistory } = this.state;
       await this.service.update({ homeDashboardUID, theme, timezone, weekStart, language, queryHistory });
+      if (top && top !== window) {
+        top.location.reload();
+        return;
+      };
       window.location.reload();
     }
   };

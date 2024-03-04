@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { Modal, ModalTabsHeader, TabContent, Themeable2, withTheme2 } from '@grafana/ui';
-import { config } from 'app/core/config';
-import { contextSrv } from 'app/core/core';
+// import { config } from 'app/core/config';
+// import { contextSrv } from 'app/core/core';
 import { t } from 'app/core/internationalization';
 import { SharePublicDashboard } from 'app/features/dashboard/components/ShareModal/SharePublicDashboard/SharePublicDashboard';
 import { isPublicDashboardsEnabled } from 'app/features/dashboard/components/ShareModal/SharePublicDashboard/SharePublicDashboardUtils';
@@ -14,7 +14,7 @@ import { ShareEmbed } from './ShareEmbed';
 import { ShareExport } from './ShareExport';
 import { ShareLibraryPanel } from './ShareLibraryPanel';
 import { ShareLink } from './ShareLink';
-import { ShareSnapshot } from './ShareSnapshot';
+// import { ShareSnapshot } from './ShareSnapshot';
 import { ShareModalTabModel } from './types';
 import { shareDashboardType } from './utils';
 
@@ -33,10 +33,10 @@ function getTabs(panel?: PanelModel, activeTab?: string) {
   const linkLabel = t('share-modal.tab-title.link', 'Link');
   const tabs: ShareModalTabModel[] = [{ label: linkLabel, value: shareDashboardType.link, component: ShareLink }];
 
-  if (contextSrv.isSignedIn && config.snapshotEnabled) {
-    const snapshotLabel = t('share-modal.tab-title.snapshot', 'Snapshot');
-    tabs.push({ label: snapshotLabel, value: shareDashboardType.snapshot, component: ShareSnapshot });
-  }
+  // if (contextSrv.isSignedIn && config.snapshotEnabled) {
+  //   const snapshotLabel = t('share-modal.tab-title.snapshot', 'Snapshot');
+  //   tabs.push({ label: snapshotLabel, value: shareDashboardType.snapshot, component: ShareSnapshot });
+  // }
 
   if (panel) {
     const embedLabel = t('share-modal.tab-title.embed', 'Embed');

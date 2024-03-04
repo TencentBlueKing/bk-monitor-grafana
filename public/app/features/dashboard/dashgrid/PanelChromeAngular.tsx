@@ -16,7 +16,7 @@ import { DashboardModel, PanelModel } from '../state';
 import { getPanelChromeProps } from '../utils/getPanelChromeProps';
 
 import { PanelHeaderMenuWrapper } from './PanelHeader/PanelHeaderMenuWrapper';
-
+// import watermarkMaker from './watermarkMaker';
 interface OwnProps {
   panel: PanelModel;
   dashboard: DashboardModel;
@@ -190,7 +190,13 @@ export class PanelChromeAngularUnconnected extends PureComponent<Props, State> {
         <PanelHeaderMenuWrapper panel={panel} dashboard={dashboard} loadingState={data.state} />
       </div>
     );
-
+    // const panelContentStyle = window.graphWatermark
+    // ? {
+    //     backgroundImage: `url(${watermarkMaker(window.grafanaBootData.user.name)})`,
+    //     backgroundRepeat: 'repeat',
+    //     backgroundPosition: 'top',
+    //   }
+    // : {};
     return (
       <PanelChrome
         width={this.props.width}

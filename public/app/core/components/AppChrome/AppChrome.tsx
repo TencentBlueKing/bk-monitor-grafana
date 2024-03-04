@@ -84,7 +84,7 @@ export function AppChrome({ children }: Props) {
       )}
       <main className={contentClass}>
         <div className={styles.panes}>
-          {state.layout === PageLayoutType.Standard && state.sectionNav && !config.featureToggles.dockedMegaMenu && (
+          {process.env.NODE_ENV === 'development' && state.layout === PageLayoutType.Standard && state.sectionNav && !config.featureToggles.dockedMegaMenu && (
             <SectionNav model={state.sectionNav} />
           )}
           {config.featureToggles.dockedMegaMenu && !state.chromeless && state.megaMenuDocked && state.megaMenuOpen && (

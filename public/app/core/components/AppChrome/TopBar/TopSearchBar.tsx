@@ -18,7 +18,7 @@ import { TOP_BAR_LEVEL_HEIGHT } from '../types';
 
 import { SignInLink } from './SignInLink';
 import { TopNavBarMenu } from './TopNavBarMenu';
-import { TopSearchBarCommandPaletteTrigger } from './TopSearchBarCommandPaletteTrigger';
+// import { TopSearchBarCommandPaletteTrigger } from './TopSearchBarCommandPaletteTrigger';
 import { TopSearchBarSection } from './TopSearchBarSection';
 
 export const TopSearchBar = React.memo(function TopSearchBar() {
@@ -44,9 +44,9 @@ export const TopSearchBar = React.memo(function TopSearchBar() {
         <OrganizationSwitcher />
       </TopSearchBarSection>
 
-      <TopSearchBarSection>
+      {/* <TopSearchBarSection>
         <TopSearchBarCommandPaletteTrigger />
-      </TopSearchBarSection>
+      </TopSearchBarSection> */}
 
       <TopSearchBarSection align="right">
         <QuickAdd />

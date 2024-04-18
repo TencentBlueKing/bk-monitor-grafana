@@ -358,7 +358,7 @@ export const getLinksSupplier =
     replaceVariables: InterpolateFunction,
     timeZone?: TimeZone
   ) =>
-  (config: ValueLinkConfig): Array<LinkModel<Field>> => {
+  (config: ValueLinkConfig, dataFrame?: DataFrame): Array<LinkModel<Field>> => {
     if (!field.config.links || field.config.links.length === 0) {
       return [];
     }
@@ -377,12 +377,14 @@ export const getLinksSupplier =
           rowIndex: config.valueRowIndex,
           timeZone: timeZone,
         });
-
         valueVars = {
           raw: field.values.get(config.valueRowIndex),
           numeric: fieldsProxy[field.name].numeric,
           text: fieldsProxy[field.name].text,
-          time: timeField ? timeField.values.get(config.valueRowIndex) : undefined,
+          time: timeField
+            ? dataFrame?.fields?.find((item) => item.type === FieldType.time)?.values?.get(config.valueRowIndex) ||
+              timeField.values.get(config.valueRowIndex)
+            : undefined,
         };
 
         dataFrameVars = {

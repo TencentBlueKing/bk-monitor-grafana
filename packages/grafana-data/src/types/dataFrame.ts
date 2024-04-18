@@ -136,7 +136,7 @@ export interface Field<T = any, V = Vector<T>> {
   /**
    * Get value data links with variables interpolated
    */
-  getLinks?: (config: ValueLinkConfig) => Array<LinkModel<Field>>;
+  getLinks?: (config: ValueLinkConfig, dataFrame?: DataFrame) => Array<LinkModel<Field>>;
 }
 
 /** @alpha */

@@ -251,9 +251,12 @@ export const ContextMenuView: React.FC<ContextMenuProps> = ({
         if (field.getLinks) {
           items.push({
             items: field
-              .getLinks({
-                valueRowIndex: dataIdx,
-              })
+              .getLinks(
+                {
+                  valueRowIndex: dataIdx,
+                },
+                data
+              )
               .map<MenuItemProps>((link) => {
                 return {
                   label: link.title,

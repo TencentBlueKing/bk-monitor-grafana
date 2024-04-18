@@ -54,7 +54,7 @@ function getValueForValueMacro(match: string, fieldPath?: string, scopedVars?: S
 
   if (fieldPath === 'time') {
     const timeField = frame.fields.find((f) => f.type === FieldType.time);
-    return timeField ? timeField.values[rowIndex] : undefined;
+    return timeField ? timeField.values[rowIndex] || scopedVars?.__all_time_filed_value__?.value?.values?.[rowIndex]  : undefined;
   }
 
   const value = field.values[rowIndex];

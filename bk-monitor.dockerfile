@@ -34,11 +34,15 @@ FROM --platform=${JS_PLATFORM} bitnami/grafana:10.3.3
 
 USER root
 
+# Remove default public directory and copy the new one
 RUN rm -rf /opt/bitnami/grafana/public
 COPY --from=js-builder /tmp/grafana/public /opt/bitnami/grafana/public
 
-COPY plugins /opt/bitnami/grafana/plugins
+# Install plugins
+COPY plugins /tmp/plugins
+RUN unzip -o /tmp/plugins/* -d /opt/bitnami/grafana/plugins && rm -rf /tmp/plugins
 
+# Fix permissions
 RUN chmod g+rwX /opt/bitnami/grafana/public /opt/bitnami/grafana/plugins
 
 USER 1001

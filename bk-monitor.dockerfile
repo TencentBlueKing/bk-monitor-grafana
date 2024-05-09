@@ -1,3 +1,5 @@
+ARG COMMIT_ID=unknown
+
 FROM node:16-alpine3.15 as js-builder
 
 ENV NODE_OPTIONS=--max_old_space_size=8000
@@ -41,3 +43,5 @@ RUN unzip -o "/tmp/plugins/*.zip" -d /opt/bitnami/grafana/plugins && rm -rf /tmp
 RUN chmod g+rwX /opt/bitnami/grafana/public /opt/bitnami/grafana/plugins
 
 USER 1001
+
+RUN echo ${COMMIT_ID} > /opt/bitnami/grafana/VERSION

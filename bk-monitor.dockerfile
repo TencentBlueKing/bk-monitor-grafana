@@ -34,6 +34,8 @@ FROM --platform=${JS_PLATFORM} bitnami/grafana:10.3.3
 
 USER root
 
+RUN apt-get update && apt-get install -y unzip
+
 # Remove default public directory and copy the new one
 RUN rm -rf /opt/bitnami/grafana/public
 COPY --from=js-builder /tmp/grafana/public /opt/bitnami/grafana/public

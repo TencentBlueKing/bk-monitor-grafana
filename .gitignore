@@ -219,5 +219,6 @@ pre-*-bkcodeai
 .idea
 .vscode
 
-# third party plugins
-/plugins
+# bkmonitor/bklog datasource
+/plugins/bkmonitor-*.zip
+/plugins/bklog-*.zip

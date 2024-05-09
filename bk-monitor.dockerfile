@@ -32,7 +32,13 @@ RUN yarn build
 
 FROM --platform=${JS_PLATFORM} bitnami/grafana:10.3.3
 
+USER root
+
 RUN rm -rf /opt/bitnami/grafana/public
 COPY --from=js-builder /tmp/grafana/public /opt/bitnami/grafana/public
 
-COPY ../plugins /opt/bitnami/grafana/plugins
+COPY plugins /opt/bitnami/grafana/plugins
+
+RUN chmod g+rwX /opt/bitnami/grafana/public /opt/bitnami/grafana/plugins
+
+USER 1001

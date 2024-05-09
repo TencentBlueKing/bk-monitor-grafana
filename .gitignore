@@ -218,3 +218,6 @@ pre-*-bkcodeai
 .codecc
 .idea
 .vscode
+
+# third party plugins
+/plugins

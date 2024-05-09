@@ -221,4 +221,4 @@ pre-*-bkcodeai
 
 # bkmonitor/bklog datasource
 /plugins/bkmonitor-*
-/plugins/bklog-
+/plugins/bklog-*

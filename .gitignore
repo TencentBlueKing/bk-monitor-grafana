@@ -172,3 +172,7 @@ deployment_tools_config.json
 .codecc
 .idea
 .vscode
+
+# third party plugins
+/plugins/bkmonitor-*
+/plugins/bklog-*

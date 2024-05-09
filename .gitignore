@@ -220,5 +220,5 @@ pre-*-bkcodeai
 .vscode
 
 # bkmonitor/bklog datasource
-/plugins/bkmonitor-*.zip
-/plugins/bklog-*.zip
+/plugins/bkmonitor-*
+/plugins/bklog-

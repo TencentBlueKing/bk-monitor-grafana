@@ -24,6 +24,9 @@ RUN yarn build
 
 FROM --platform=linux/${CHIP} bitnami/grafana:9.1.0
 
+ENV COMMIT_ID=${COMMIT_ID}
+RUN echo $COMMIT_ID > /opt/bitnami/grafana/VERSION
+
 USER root
 
 RUN apt-get update && apt-get install -y unzip
@@ -43,5 +46,3 @@ RUN unzip -o "/tmp/plugins/*.zip" -d /opt/bitnami/grafana/plugins && rm -rf /tmp
 RUN chmod g+rwX /opt/bitnami/grafana/public /opt/bitnami/grafana/plugins
 
 USER 1001
-
-RUN echo $COMMIT_ID > /opt/bitnami/grafana/VERSION

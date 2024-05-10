@@ -44,4 +44,4 @@ RUN chmod g+rwX /opt/bitnami/grafana/public /opt/bitnami/grafana/plugins
 
 USER 1001
 
-RUN echo ${COMMIT_ID} > /opt/bitnami/grafana/VERSION
+RUN echo $COMMIT_ID > /opt/bitnami/grafana/VERSION

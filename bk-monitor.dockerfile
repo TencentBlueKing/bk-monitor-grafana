@@ -1,6 +1,7 @@
+ARG CHIP=amd64
 ARG COMMIT_ID=unknown
 
-FROM node:16-alpine3.15 as js-builder
+FROM --platform=linux/${CHIP} node:16-alpine3.15 as js-builder
 
 ENV NODE_OPTIONS=--max_old_space_size=8000
 

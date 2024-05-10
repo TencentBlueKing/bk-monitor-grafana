@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y unzip
 
 # Remove default public directory and copy the new one
 RUN rm -rf /opt/bitnami/grafana/public
-COPY --from=js-builder /tmp/grafana/public /opt/bitnami/grafana/public
+COPY --from=js-builder /grafana/public /opt/bitnami/grafana/public
 
 RUN cd /opt/bitnami/grafana/public/app/plugins/datasource/ && \
     rm -rf loki prometheus influxdb graphite mssql jaeger tempo zipkin cloudwatch cloud-monitoring grafana-azure-monitor-datasource postgres opentsdb

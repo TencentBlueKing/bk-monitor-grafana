@@ -103,7 +103,10 @@ export class DashboardSrv {
       if (this.dashboard?.uid === dashboardUid) {
         this.dashboard.meta.isStarred = newIsStarred;
       }
-
+      // 点击收藏触发通知监控
+      if (window.parent !== window) {
+        window.parent.postMessage({ starredChange: dashboardUid }, '*');
+      }
       const message = newIsStarred
         ? t('notifications.starred-dashboard', 'Dashboard starred')
         : t('notifications.unstarred-dashboard', 'Dashboard unstarred');

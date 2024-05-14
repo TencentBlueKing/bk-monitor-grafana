@@ -12,11 +12,11 @@ import {
   VizPanel,
 } from '@grafana/scenes';
 import { Container, CustomScrollbar, TabContent, TabsBar, useStyles2 } from '@grafana/ui';
-import { shouldShowAlertingTab } from 'app/features/dashboard/components/PanelEditor/state/selectors';
+// import { shouldShowAlertingTab } from 'app/features/dashboard/components/PanelEditor/state/selectors';
 
 import { VizPanelManager } from '../VizPanelManager';
 
-import { PanelDataAlertingTab } from './PanelDataAlertingTab';
+// import { PanelDataAlertingTab } from './PanelDataAlertingTab';
 import { PanelDataQueriesTab } from './PanelDataQueriesTab';
 import { PanelDataTransformationsTab } from './PanelDataTransformationsTab';
 import { PanelDataPaneTab, TabId } from './types';
@@ -119,9 +119,9 @@ export class PanelDataPane extends SceneObjectBase<PanelDataPaneState> {
 
         tabs.push(new PanelDataTransformationsTab(this.panelManager));
 
-        if (shouldShowAlertingTab(plugin)) {
-          tabs.push(new PanelDataAlertingTab(this.panelManager));
-        }
+        // if (shouldShowAlertingTab(plugin)) {
+        //   tabs.push(new PanelDataAlertingTab(this.panelManager));
+        // }
       }
     }
 

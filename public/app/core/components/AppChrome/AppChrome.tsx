@@ -9,7 +9,7 @@ import config from 'app/core/config';
 import { useGrafana } from 'app/core/context/GrafanaContext';
 import { useMediaQueryChange } from 'app/core/hooks/useMediaQueryChange';
 import store from 'app/core/store';
-import { CommandPalette } from 'app/features/commandPalette/CommandPalette';
+// import { CommandPalette } from 'app/features/commandPalette/CommandPalette';
 import { KioskMode } from 'app/types';
 
 import { AppChromeMenu } from './AppChromeMenu';
@@ -17,7 +17,7 @@ import { DOCKED_LOCAL_STORAGE_KEY, DOCKED_MENU_OPEN_LOCAL_STORAGE_KEY } from './
 import { MegaMenu } from './MegaMenu/MegaMenu';
 import { NavToolbar } from './NavToolbar/NavToolbar';
 import { ReturnToPrevious } from './ReturnToPrevious/ReturnToPrevious';
-import { TopSearchBar } from './TopBar/TopSearchBar';
+// import { TopSearchBar } from './TopBar/TopSearchBar';
 import { TOP_BAR_LEVEL_HEIGHT } from './types';
 
 export interface Props extends PropsWithChildren<{}> {}
@@ -83,7 +83,7 @@ export function AppChrome({ children }: Props) {
             Skip to main content
           </LinkButton>
           <div className={cx(styles.topNav)}>
-            {!searchBarHidden && <TopSearchBar />}
+            {/* {!searchBarHidden && <TopSearchBar />} */}
             <NavToolbar
               searchBarHidden={searchBarHidden}
               sectionNav={state.sectionNav.node}
@@ -98,7 +98,7 @@ export function AppChrome({ children }: Props) {
       )}
       <main className={contentClass}>
         <div className={styles.panes}>
-          {!state.chromeless && state.megaMenuDocked && state.megaMenuOpen && (
+          {process.env.NODE_ENV === 'development' && !state.chromeless && state.megaMenuDocked && state.megaMenuOpen && (
             <MegaMenu className={styles.dockedMegaMenu} onClose={() => chrome.setMegaMenuOpen(false)} />
           )}
           <div className={styles.pageContainer} id="pageContent">
@@ -106,8 +106,8 @@ export function AppChrome({ children }: Props) {
           </div>
         </div>
       </main>
-      {!state.chromeless && !state.megaMenuDocked && <AppChromeMenu />}
-      {!state.chromeless && <CommandPalette />}
+      {process.env.NODE_ENV === 'development' && !state.chromeless && !state.megaMenuDocked && <AppChromeMenu />}
+      {/* {!state.chromeless && <CommandPalette />} */}
       {shouldShowReturnToPrevious && state.returnToPrevious && (
         <ReturnToPrevious href={state.returnToPrevious.href} title={state.returnToPrevious.title} />
       )}

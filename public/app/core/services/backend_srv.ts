@@ -243,6 +243,18 @@ export class BackendSrv implements BackendService {
           config: options,
           traceId: response.headers.get(GRAFANA_TRACEID_HEADER) ?? undefined,
         };
+        if (redirected && url?.indexOf('login') > -1) {
+            const loginHref = url.match(/http[^?]+/);
+            if (loginHref?.length) {
+              if (top === window) {
+                location.href = `${loginHref[0]}?c_url=${location.href}`;
+              } else {
+              window.parent.postMessage({ redirected: true, href: loginHref[0] || '' }, '*');
+            };
+          };
+        } else if (status === 401 && top !== window &&  (data as any).login_url) {
+           window.parent.postMessage({ status: 'login', login_url: (data as any).login_url }, '*');
+        };
         return fetchResponse;
       })
     );

@@ -3,7 +3,7 @@ import React from 'react';
 
 import { GrafanaTheme2, NavModelItem } from '@grafana/data';
 import { Components } from '@grafana/e2e-selectors';
-import { Icon, IconButton, ToolbarButton, useStyles2 } from '@grafana/ui';
+import { IconButton, ToolbarButton, useStyles2 } from '@grafana/ui';
 import { useGrafana } from 'app/core/context/GrafanaContext';
 import { t } from 'app/core/internationalization';
 import { HOME_NAV_ID } from 'app/core/reducers/navModel';
@@ -13,7 +13,7 @@ import { Breadcrumbs } from '../../Breadcrumbs/Breadcrumbs';
 import { buildBreadcrumbs } from '../../Breadcrumbs/utils';
 import { TOP_BAR_LEVEL_HEIGHT } from '../types';
 
-import { NavToolbarSeparator } from './NavToolbarSeparator';
+// import { NavToolbarSeparator } from './NavToolbarSeparator';
 
 export const TOGGLE_BUTTON_ID = 'mega-menu-toggle';
 
@@ -45,19 +45,21 @@ export function NavToolbar({
   return (
     <div data-testid={Components.NavToolbar.container} className={styles.pageToolbar}>
       <div className={styles.menuButton}>
-        <IconButton
-          id={TOGGLE_BUTTON_ID}
-          name="bars"
-          tooltip={
-            state.megaMenuOpen
-              ? t('navigation.toolbar.close-menu', 'Close menu')
-              : t('navigation.toolbar.open-menu', 'Open menu')
-          }
-          tooltipPlacement="bottom"
-          size="xl"
-          onClick={onToggleMegaMenu}
-          data-testid={Components.NavBar.Toggle.button}
-        />
+        {
+          process.env.NODE_ENV === 'development' &&  <IconButton
+            id={TOGGLE_BUTTON_ID}
+            name="bars"
+            tooltip={
+              state.megaMenuOpen
+                ? t('navigation.toolbar.close-menu', 'Close menu')
+                : t('navigation.toolbar.open-menu', 'Open menu')
+            }
+            tooltipPlacement="bottom"
+            size="xl"
+            onClick={onToggleMegaMenu}
+            data-testid={Components.NavBar.Toggle.button}
+          />
+        }
       </div>
       <Breadcrumbs breadcrumbs={breadcrumbs} className={styles.breadcrumbsWrapper} />
       <div className={styles.actions}>
@@ -70,14 +72,14 @@ export function NavToolbar({
             icon="monitor"
           />
         )}
-        {actions && <NavToolbarSeparator />}
+        {/* {actions && <NavToolbarSeparator />}
         <ToolbarButton
           onClick={onToggleSearchBar}
           narrow
           title={t('navigation.toolbar.toggle-search-bar', 'Toggle top search bar')}
         >
           <Icon name={searchBarHidden ? 'angle-down' : 'angle-up'} size="xl" />
-        </ToolbarButton>
+        </ToolbarButton> */}
       </div>
     </div>
   );
@@ -88,9 +90,13 @@ const getStyles = (theme: GrafanaTheme2) => {
     breadcrumbsWrapper: css({
       display: 'flex',
       overflow: 'hidden',
+      alignItems: 'center',
       [theme.breakpoints.down('sm')]: {
         minWidth: '50%',
       },
+      'ol': {
+        marginBottom: '0px',
+      }
     }),
     pageToolbar: css({
       height: TOP_BAR_LEVEL_HEIGHT,

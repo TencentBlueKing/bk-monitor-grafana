@@ -1,10 +1,10 @@
-import { Action, KBarProvider } from 'kbar';
+// import { Action, KBarProvider } from 'kbar';
 import React, { ComponentType } from 'react';
 import { Provider } from 'react-redux';
 import { Router, Redirect, Switch, RouteComponentProps } from 'react-router-dom';
 import { CompatRouter, CompatRoute } from 'react-router-dom-v5-compat';
 
-import { config, locationService, navigationLogger, reportInteraction } from '@grafana/runtime';
+import { config, locationService, navigationLogger } from '@grafana/runtime';
 import { ErrorBoundaryAlert, GlobalStyles, ModalRoot, ModalsProvider, PortalContainer } from '@grafana/ui';
 import { getAppRoutes } from 'app/routes/routes';
 import { store } from 'app/store/store';
@@ -40,19 +40,37 @@ export function addBodyRenderHook(fn: ComponentType) {
 export function addPageBanner(fn: ComponentType) {
   pageBanners.push(fn);
 }
-
-export class AppWrapper extends React.Component<AppWrapperProps, AppWrapperState> {
+ export class AppWrapper extends React.Component<AppWrapperProps, AppWrapperState> {
   constructor(props: AppWrapperProps) {
     super(props);
     this.state = {};
+    
   }
 
   async componentDidMount() {
     await loadAndInitAngularIfEnabled();
     this.setState({ ready: true });
     $('.preloader').remove();
+    window.addEventListener('message', this.handleMessage)
   }
-
+  componentWillUnmount() {
+    window.removeEventListener('message', this.handleMessage)
+  }
+  handleMessage = (e: MessageEvent) => {
+    if(!e?.data) {return}
+    const history = this.props.app.context.location.getHistory()
+    if(e.data.route) {
+      history.push(e.data.route, {
+        search: e.data.search || '',
+      })
+    } else if(e.data === 'create') {
+      history.push('/dashboard/new')
+    } else if(e.data === 'folder') {
+      history.push('/dashboards/folder/new')
+    } else if(e.data === 'import') {
+      history.push('/dashboard/import')
+    }
+  }
   renderRoute = (route: RouteDescriptor) => {
     const roles = route.roles ? route.roles() : [];
 
@@ -86,22 +104,22 @@ export class AppWrapper extends React.Component<AppWrapperProps, AppWrapperState
 
     navigationLogger('AppWrapper', false, 'rendering');
 
-    const commandPaletteActionSelected = (action: Action) => {
-      reportInteraction('command_palette_action_selected', {
-        actionId: action.id,
-        actionName: action.name,
-      });
-    };
+    // const commandPaletteActionSelected = (action: Action) => {
+    //   reportInteraction('command_palette_action_selected', {
+    //     actionId: action.id,
+    //     actionName: action.name,
+    //   });
+    // };
 
     return (
       <Provider store={store}>
         <ErrorBoundaryAlert style="page">
           <GrafanaContext.Provider value={app.context}>
             <ThemeProvider value={config.theme2}>
-              <KBarProvider
+              {/* <KBarProvider
                 actions={[]}
                 options={{ enableHistory: true, callbacks: { onSelectAction: commandPaletteActionSelected } }}
-              >
+              > */}
                 <ModalsProvider>
                   <GlobalStyles />
                   <div className="grafana-app">
@@ -125,7 +143,7 @@ export class AppWrapper extends React.Component<AppWrapperProps, AppWrapperState
                   <ModalRoot />
                   <PortalContainer />
                 </ModalsProvider>
-              </KBarProvider>
+              {/* </KBarProvider> */}
             </ThemeProvider>
           </GrafanaContext.Provider>
         </ErrorBoundaryAlert>
@@ -133,3 +151,4 @@ export class AppWrapper extends React.Component<AppWrapperProps, AppWrapperState
     );
   }
 }
+

@@ -293,7 +293,8 @@ export class PanelQueryRunner {
       queryCachingTTL,
       startTime: Date.now(),
       rangeRaw: timeRange.raw,
-    };
+      panelType: (this.dataConfigSource as PanelModel).type,
+    } as any;
 
     try {
       const ds = await getDataSource(datasource, request.scopedVars);

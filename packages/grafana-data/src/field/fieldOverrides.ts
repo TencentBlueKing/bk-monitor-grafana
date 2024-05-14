@@ -492,7 +492,11 @@ export const getLinksSupplier =
 
         if (href) {
           href = locationUtil.assureBaseUrl(href.replace(/\n/g, ''));
-          href = replaceVariables(href, dataLinkScopedVars, VariableFormatID.UriEncode);
+          href = replaceVariables(href, {
+            ...dataLinkScopedVars,
+            __all_time_filed_value__: { value: frame?.fields?.find(item => item.type === 'time')}       
+
+          }, VariableFormatID.UriEncode);
           href = locationUtil.processUrl(href);
         }
 

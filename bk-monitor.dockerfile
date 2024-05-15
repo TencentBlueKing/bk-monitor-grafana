@@ -47,7 +47,7 @@ RUN cd /opt/bitnami/grafana/public/app/plugins/datasource/ && \
 
 # Install plugins
 COPY plugins /tmp/plugins
-RUN unzip -o "/tmp/plugins/*.zip" -d /opt/bitnami/grafana/plugins && tar -xf /tmp/plugins/*.tar.gz -C /opt/bitnami/grafana/plugins && rm -rf /tmp/plugins
+RUN unzip -o "/tmp/plugins/*.zip" -d /opt/bitnami/grafana/plugins && rm -rf /tmp/plugins
 
 # Fix permissions
 RUN chmod g+rwX /opt/bitnami/grafana/public /opt/bitnami/grafana/plugins

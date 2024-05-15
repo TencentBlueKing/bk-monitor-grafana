@@ -1,14 +1,14 @@
 # syntax=docker/dockerfile:1
 
-ARG BASE_IMAGE=alpine:3.18.3
-ARG JS_IMAGE=node:20-alpine3.18
-ARG CHIP=amd64
-ARG GO_IMAGE=golang:1.21.5-alpine3.18
+ARG BASE_IMAGE=alpine:3.19.1
+ARG JS_IMAGE=node:20-alpine
+ARG JS_PLATFORM=linux/amd64
+ARG GO_IMAGE=golang:1.21.8-alpine
 
 ARG GO_SRC=go-builder
 ARG JS_SRC=js-builder
 
-FROM --platform=linux/${CHIP} ${JS_IMAGE} as js-builder
+FROM --platform=${JS_PLATFORM} ${JS_IMAGE} as js-builder
 
 ENV NODE_OPTIONS=--max_old_space_size=8000
 
@@ -20,9 +20,11 @@ COPY packages packages
 COPY plugins-bundled plugins-bundled
 COPY public public
 
+RUN apk add --no-cache make build-base python3
+
 RUN yarn install --immutable
 
-COPY tsconfig.json .eslintrc .editorconfig .browserslistrc .prettierrc.js babel.config.json ./
+COPY tsconfig.json .eslintrc .editorconfig .browserslistrc .prettierrc.js ./
 COPY public public
 COPY scripts scripts
 COPY emails emails
@@ -30,7 +32,7 @@ COPY emails emails
 ENV NODE_ENV production
 RUN yarn build
 
-FROM --platform=linux/${CHIP} bitnami/grafana:10.3.3
+FROM --platform=linux/${CHIP} bitnami/grafana:10.4.2
 
 USER root
 

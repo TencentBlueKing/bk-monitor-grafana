@@ -1,5 +1,5 @@
 // The ID of the main nav-tree item (the main item in the NavIndex)
-export const ROUTE_BASE_ID = 'connections';
+export const ROUTE_BASE_ID = top === window ? 'connections' : 'grafana/connections';
 
 export const ROUTES = {
   Base: `/${ROUTE_BASE_ID}`,

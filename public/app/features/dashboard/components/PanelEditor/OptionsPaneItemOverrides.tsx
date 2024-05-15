@@ -15,7 +15,7 @@ export function OptionsPaneItemOverrides({ overrides }: Props) {
 
   return (
     <div className={styles.wrapper}>
-      {overrides.map((override, index) => (
+      {overrides.slice(0, 1).map((override, index) => (
         <Tooltip content={override.tooltip} key={index.toString()} placement="top">
           <div aria-label={override.description} className={styles[override.type]} />
         </Tooltip>

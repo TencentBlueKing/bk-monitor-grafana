@@ -13,7 +13,7 @@ interface AddNewDataSourceButtonProps {
 
 export function AddNewDataSourceButton({ variant, onClick }: AddNewDataSourceButtonProps) {
   const hasCreateRights = contextSrv.hasPermission(AccessControlAction.DataSourcesCreate);
-  const newDataSourceURL = CONNECTIONS_ROUTES.DataSourcesNew;
+  const newDataSourceURL = `${top !== window ? '/grafana' : ''}${CONNECTIONS_ROUTES.DataSourcesNew}`  ;
 
   return (
     <LinkButton

@@ -43,7 +43,7 @@ RUN apt-get update && apt-get install -y unzip
 RUN rm -rf /opt/bitnami/grafana/public
 COPY --from=js-builder /tmp/grafana/public /opt/bitnami/grafana/public
 
-ENV COMMIT_ID=${COMMIT_ID}
+ENV REMOVE_PLUGINS=${REMOVE_PLUGINS}
 RUN cd /opt/bitnami/grafana/public/app/plugins/datasource/ && \
     echo ${REMOVE_PLUGINS} | tr ' ' '\n' | xargs -I {} rm -rf {}
 

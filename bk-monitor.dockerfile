@@ -1,5 +1,6 @@
 ARG CHIP=amd64
 ARG COMMIT_ID=unknown
+ARG REMOVE_PLUGINS="loki prometheus influxdb graphite mssql jaeger tempo zipkin cloudwatch cloud-monitoring grafana-azure-monitor-datasource postgres opentsdb"
 
 FROM --platform=linux/${CHIP} node:16-alpine3.15 as js-builder
 
@@ -33,8 +34,9 @@ RUN apt-get update && apt-get install -y unzip
 RUN rm -rf /opt/bitnami/grafana/public
 COPY --from=js-builder /grafana/public /opt/bitnami/grafana/public
 
+ENV REMOVE_PLUGINS=${REMOVE_PLUGINS}
 RUN cd /opt/bitnami/grafana/public/app/plugins/datasource/ && \
-    rm -rf loki prometheus influxdb graphite mssql jaeger tempo zipkin cloudwatch cloud-monitoring grafana-azure-monitor-datasource postgres opentsdb
+    echo ${REMOVE_PLUGINS} | tr ' ' '\n' | xargs -I {} rm -rf {}
 
 # Install plugins
 COPY plugins /opt/bitnami/grafana/plugins

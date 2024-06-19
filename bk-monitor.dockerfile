@@ -4,6 +4,7 @@ ARG BASE_IMAGE=alpine:3.19.1
 ARG JS_IMAGE=node:20-alpine
 ARG CHIP=amd64
 ARG GO_IMAGE=golang:1.21.8-alpine
+ARG REMOVE_PLUGINS="loki prometheus influxdb graphite mssql jaeger tempo zipkin cloudwatch cloud-monitoring grafana-azure-monitor-datasource postgres opentsdb"
 
 ARG GO_SRC=go-builder
 ARG JS_SRC=js-builder
@@ -43,7 +44,7 @@ RUN rm -rf /opt/bitnami/grafana/public
 COPY --from=js-builder /tmp/grafana/public /opt/bitnami/grafana/public
 
 RUN cd /opt/bitnami/grafana/public/app/plugins/datasource/ && \
-    rm -rf loki prometheus influxdb graphite mssql jaeger tempo zipkin cloudwatch cloud-monitoring grafana-azure-monitor-datasource postgres opentsdb
+    echo $REMOVE_PLUGINS | tr ' ' '\n' | xargs -I {} rm -rf {}
 
 # Install plugins
 COPY plugins /opt/bitnami/grafana/plugins

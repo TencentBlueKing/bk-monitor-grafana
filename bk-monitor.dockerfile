@@ -44,7 +44,7 @@ RUN rm -rf /opt/bitnami/grafana/public
 COPY --from=js-builder /tmp/grafana/public /opt/bitnami/grafana/public
 
 RUN cd /opt/bitnami/grafana/public/app/plugins/datasource/ && \
-    echo $REMOVE_PLUGINS | tr ' ' '\n' | xargs -I {} rm -rf {}
+    echo ${REMOVE_PLUGINS} | tr ' ' '\n' | xargs -I {} rm -rf {}
 
 # Install plugins
 COPY plugins /opt/bitnami/grafana/plugins

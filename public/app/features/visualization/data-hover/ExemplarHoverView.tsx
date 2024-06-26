@@ -4,9 +4,9 @@ import React from 'react';
 import { GrafanaTheme2, LinkModel } from '@grafana/data';
 import { LinkButton, useStyles2 } from '@grafana/ui';
 import { VizTooltipRow } from '@grafana/ui/src/components/VizTooltip/VizTooltipRow';
-import { renderValue } from 'app/plugins/panel/geomap/utils/uiUtils';
 
 import { DisplayValue } from './DataHoverView';
+import { renderValue } from './uiUtils';
 
 export interface Props {
   displayValues: DisplayValue[];

@@ -9,8 +9,8 @@ import {
 } from '@grafana/data';
 import { DataTopic } from '@grafana/schema';
 import { Field, Select, useStyles2 } from '@grafana/ui';
-import { FrameSelectionEditor } from 'app/plugins/panel/geomap/editor/FrameSelectionEditor';
 
+import { FrameSelectionEditor } from './FrameSelectionEditor';
 import { TransformationData } from './TransformationsEditor';
 
 interface TransformationFilterProps {

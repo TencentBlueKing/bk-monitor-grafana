@@ -13,9 +13,10 @@ import {
 import { config } from '@grafana/runtime';
 import { SortOrder, TooltipDisplayMode } from '@grafana/schema';
 import { TextLink, useStyles2 } from '@grafana/ui';
-import { renderValue } from 'app/plugins/panel/geomap/utils/uiUtils';
 
 import { ExemplarHoverView } from './ExemplarHoverView';
+import { renderValue } from './uiUtils';
+
 
 export interface Props {
   data?: DataFrame; // source data

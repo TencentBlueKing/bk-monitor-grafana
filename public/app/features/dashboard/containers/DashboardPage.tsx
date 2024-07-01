@@ -293,10 +293,17 @@ export class UnthemedDashboardPage extends PureComponent<Props, State> {
   };
 
   render() {
-    const { dashboard, initError, queryParams } = this.props;
+    const { dashboard, initError, queryParams, theme } = this.props;
     const { editPanel, viewPanel, updateScrollTop, pageNav, sectionNav } = this.state;
     const kioskMode = getKioskMode(this.props.queryParams);
-
+    const variableStyles: React.CSSProperties = {
+      position: 'sticky',
+      top: 0,
+      zIndex: 9,
+      background: theme.components.dashboard.background,
+      margin: '-16px -16px 0 -16px',
+      padding: '16px 16px 0px 16px'
+    }
     if (!dashboard || !pageNav || !sectionNav) {
       return <DashboardLoading initPhase={this.props.initPhase} />;
     }
@@ -344,7 +351,8 @@ export class UnthemedDashboardPage extends PureComponent<Props, State> {
           <DashboardPrompt dashboard={dashboard} />
           {initError && <DashboardFailed />}
           {showSubMenu && (
-            <section aria-label={selectors.pages.Dashboard.SubMenu.submenu}>
+            <section aria-label={selectors.pages.Dashboard.SubMenu.submenu}
+            style={variableStyles}>
               <SubMenu dashboard={dashboard} annotations={dashboard.annotations.list} links={dashboard.links} />
             </section>
           )}

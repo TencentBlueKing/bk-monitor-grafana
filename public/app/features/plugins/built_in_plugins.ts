@@ -69,7 +69,7 @@ import * as welcomeBanner from 'app/plugins/panel/welcome/module';
 import * as xyChartPanel from 'app/plugins/panel/xychart/module';
 
 // Async loaded panels
-const geomapPanel = async () => await import(/* webpackChunkName: "geomapPanel" */ 'app/plugins/panel/geomap/module');
+// const geomapPanel = async () => await import(/* webpackChunkName: "geomapPanel" */ 'app/plugins/panel/geomap/module');
 const canvasPanel = async () => await import(/* webpackChunkName: "canvasPanel" */ 'app/plugins/panel/canvas/module');
 const graphPanel = async () => await import(/* webpackChunkName: "graphPlugin" */ 'app/plugins/panel/graph/module');
 const heatmapPanel = async () =>
@@ -113,7 +113,7 @@ const builtInPlugins: Record<string, System.Module | (() => Promise<System.Modul
   'core:plugin/candlestick': candlestickPanel,
   'core:plugin/graph': graphPanel,
   'core:plugin/xychart': xyChartPanel,
-  'core:plugin/geomap': geomapPanel,
+  // 'core:plugin/geomap': geomapPanel,
   'core:plugin/canvas': canvasPanel,
   'core:plugin/dashlist': dashListPanel,
   'core:plugin/alertlist': alertListPanel,

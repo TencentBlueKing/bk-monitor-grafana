@@ -1368,12 +1368,6 @@
     "name": "Tuvalu"
   },
   {
-    "keys": ["TW", "TWN"],
-    "latitude": 23.69781,
-    "longitude": 120.960515,
-    "name": "Taiwan"
-  },
-  {
     "keys": ["TZ", "TZA"],
     "latitude": -6.369028,
     "longitude": 34.888822,

@@ -387,7 +387,6 @@ const countryByCode: Record<string, string> = {
   SE: 'Sweden',
   CH: 'Switzerland',
   SY: 'Syrian Arab Republic',
-  TW: 'Taiwan',
   TJ: 'Tajikistan',
   TZ: 'Tanzania',
   TH: 'Thailand',

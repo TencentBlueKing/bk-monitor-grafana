@@ -359,14 +359,19 @@ export class UnthemedDashboardPage extends PureComponent<Props, State> {
   }
 
   render() {
-    const { dashboard, initError, queryParams, isPublic } = this.props;
+    const { dashboard, initError, queryParams, isPublic, theme } = this.props;
     const { editPanel, viewPanel, updateScrollTop } = this.state;
     const kioskMode = !isPublic ? getKioskMode() : KioskMode.Full;
 
     if (!dashboard) {
       return <DashboardLoading initPhase={this.props.initPhase} />;
     }
-
+    const variableStyles: React.CSSProperties = {
+      position: 'sticky',
+      top: 0,
+      zIndex: 9,
+      background: theme.components.dashboard.background,
+    };
     const inspectPanel = this.getInspectPanel();
     const containerClassNames = classnames({ 'panel-in-fullscreen': viewPanel });
 
@@ -398,7 +403,7 @@ export class UnthemedDashboardPage extends PureComponent<Props, State> {
 
         {initError && <DashboardFailed />}
         {showSubMenu && (
-          <section aria-label={selectors.pages.Dashboard.SubMenu.submenu}>
+          <section aria-label={selectors.pages.Dashboard.SubMenu.submenu} style={variableStyles}>
             <SubMenu dashboard={dashboard} annotations={dashboard.annotations.list} links={dashboard.links} />
           </section>
         )}

@@ -90,7 +90,7 @@ class VariableOptions extends PureComponent<Props> {
               [styles.hideVariableOptionIcon]: !multi,
             })}
           ></span>
-          <span data-testid={selectors.pages.Dashboard.SubMenu.submenuItemValueDropDownOptionTexts(`${option.text}`)}>
+          <span style={{userSelect: 'text'}} data-testid={selectors.pages.Dashboard.SubMenu.submenuItemValueDropDownOptionTexts(`${option.text}`)}>
             {isAllOption ? t('variable.picker.option-all', 'All') : option.text}
           </span>
         </button>

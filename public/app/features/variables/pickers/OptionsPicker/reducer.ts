@@ -259,16 +259,24 @@ const optionsPickerSlice = createSlice({
 
         const [idxs, info, order] = ufuzzy.search(haystack, needle, 5);
 
-        if (idxs?.length) {
+        // if (idxs?.length) {
           if (info && order) {
             opts = order.map((idx) => action.payload[info.idx[idx]]);
-          } else {
-            opts = idxs!.map((idx) => action.payload[idx]);
+          } else if (idxs?.length){
+            opts = idxs?.map((idx) => action.payload[idx]);
+          }else {
+            // 处理中文搜索
+            opts = haystack.map((text, index) => {
+              if(text.toLowerCase().includes(needle.toLowerCase())) {
+                return action.payload[index];
+              }
+              return undefined
+            }).filter(Boolean) as VariableOption[];
           }
 
           // always sort $__all to the top, even if exact match exists?
           opts.sort((a, b) => (a.value === ALL_VARIABLE_VALUE ? -1 : 0) - (b.value === ALL_VARIABLE_VALUE ? -1 : 0));
-        }
+        // }
       }
 
       state.highlightIndex = 0;

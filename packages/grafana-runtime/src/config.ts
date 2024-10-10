@@ -17,6 +17,7 @@ import {
   SystemDateFormatSettings,
   getThemeById,
   AngularMeta,
+  NavLinkDTO,
 } from '@grafana/data';
 
 export interface AzureSettings {
@@ -213,6 +214,32 @@ export class GrafanaBootConfig implements GrafanaConfig {
     this.theme2 = getThemeById(this.bootData.user.theme);
     this.bootData.user.lightTheme = this.theme2.isLight;
     this.theme = this.theme2.v1;
+    this.updateBootDataNavTree();
+  }
+  updateBootDataNavTree() {
+    const navTree = this.bootData.navTree;
+    const newNavTree: NavLinkDTO[] = [];
+    for (const nav of navTree) {
+      if (!nav.id || ['alerting'].includes(nav.id)) {
+        continue;
+      }
+      if (nav.id === 'cfg') {
+        const navChildren = [];
+        for (const child of nav.children!) {
+          if (child.id === 'cfg/access') {
+            continue;
+          }
+          navChildren.push(...child.children!);
+        }
+        newNavTree.push({
+          ...nav,
+          children: navChildren.filter((child) => !['upgrading', 'global-orgs'].includes(child.id!)),
+        });
+        continue;
+      }
+      newNavTree.push(nav);
+    }
+    this.bootData.navTree = newNavTree;
   }
 }
 

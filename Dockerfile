@@ -21,8 +21,10 @@ COPY plugins-bundled plugins-bundled
 COPY public public
 
 RUN apk add --no-cache make build-base python3
-
-RUN yarn install --verbose
+RUN yarn -v
+RUN node -v
+RUN yarn cache clean
+RUN yarn install
 
 COPY tsconfig.json .eslintrc .editorconfig .browserslistrc .prettierrc.js ./
 COPY public public

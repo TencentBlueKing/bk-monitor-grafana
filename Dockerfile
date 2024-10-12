@@ -24,7 +24,7 @@ RUN apk add --no-cache make build-base python3
 RUN yarn -v
 RUN node -v
 RUN yarn cache clean
-RUN yarn install
+RUN yarn install --immutable || true
 
 COPY tsconfig.json .eslintrc .editorconfig .browserslistrc .prettierrc.js ./
 COPY public public

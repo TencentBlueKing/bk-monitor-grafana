@@ -1,3 +1,4 @@
+import Watermark from 'antd/es/watermark';
 import React, { PureComponent } from 'react';
 import { Subscription } from 'rxjs';
 
@@ -52,7 +53,6 @@ import { PanelLoadTimeMonitor } from './PanelLoadTimeMonitor';
 import { seriesVisibilityConfigFactory } from './SeriesVisibilityConfigFactory';
 import { liveTimer } from './liveTimer';
 import { PanelOptionsLogger } from './panelOptionsLogger';
-
 const DEFAULT_PLUGIN_ERROR = 'Error in plugin';
 
 export interface Props {
@@ -559,44 +559,52 @@ export class PanelStateWrapper extends PureComponent<Props, State> {
         <PanelHeaderMenuWrapper panel={panel} dashboard={dashboard} loadingState={data.state} />
       </div>
     );
-
     return (
-      <PanelChrome
-        width={width}
-        height={height}
-        title={panelChromeProps.title}
-        loadingState={data.state}
-        statusMessage={errorMessage}
-        statusMessageOnClick={panelChromeProps.onOpenErrorInspect}
-        description={panelChromeProps.description}
-        titleItems={panelChromeProps.titleItems}
-        menu={this.props.hideMenu ? undefined : menu}
-        dragClass={panelChromeProps.dragClass}
-        dragClassCancel="grid-drag-cancel"
-        padding={panelChromeProps.padding}
-        hoverHeaderOffset={hoverHeaderOffset}
-        hoverHeader={panelChromeProps.hasOverlayHeader()}
-        displayMode={transparent ? 'transparent' : 'default'}
-        onCancelQuery={panelChromeProps.onCancelQuery}
-        onOpenMenu={panelChromeProps.onOpenMenu}
+      <Watermark
+        content={window.graphWatermark ? window.grafanaBootData?.user?.name : ''}
+        zIndex={1000}
+        gap={[200, 200]}
+        font={{
+          color: '#aaa',
+        }}
       >
-        {(innerWidth, innerHeight) => (
-          <>
-            <ErrorBoundary
-              dependencies={[data, plugin, panel.getOptions()]}
-              onError={this.onPanelError}
-              onRecover={this.onPanelErrorRecover}
-            >
-              {({ error }) => {
-                if (error) {
-                  return null;
-                }
-                return this.renderPanelContent(innerWidth, innerHeight);
-              }}
-            </ErrorBoundary>
-          </>
-        )}
-      </PanelChrome>
+        <PanelChrome
+          width={width}
+          height={height}
+          title={panelChromeProps.title}
+          loadingState={data.state}
+          statusMessage={errorMessage}
+          statusMessageOnClick={panelChromeProps.onOpenErrorInspect}
+          description={panelChromeProps.description}
+          titleItems={panelChromeProps.titleItems}
+          menu={this.props.hideMenu ? undefined : menu}
+          dragClass={panelChromeProps.dragClass}
+          dragClassCancel="grid-drag-cancel"
+          padding={panelChromeProps.padding}
+          hoverHeaderOffset={hoverHeaderOffset}
+          hoverHeader={panelChromeProps.hasOverlayHeader()}
+          displayMode={transparent ? 'transparent' : 'default'}
+          onCancelQuery={panelChromeProps.onCancelQuery}
+          onOpenMenu={panelChromeProps.onOpenMenu}
+        >
+          {(innerWidth, innerHeight) => (
+            <>
+              <ErrorBoundary
+                dependencies={[data, plugin, panel.getOptions()]}
+                onError={this.onPanelError}
+                onRecover={this.onPanelErrorRecover}
+              >
+                {({ error }) => {
+                  if (error) {
+                    return null;
+                  }
+                  return this.renderPanelContent(innerWidth, innerHeight);
+                }}
+              </ErrorBoundary>
+            </>
+          )}
+        </PanelChrome>
+      </Watermark>
     );
   }
 }

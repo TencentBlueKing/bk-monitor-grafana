@@ -1,3 +1,4 @@
+import Watermark from 'antd/es/watermark';
 import React, { PureComponent } from 'react';
 import { connect, MapDispatchToProps, MapStateToProps } from 'react-redux';
 import { Subscription } from 'rxjs';
@@ -16,7 +17,6 @@ import { DashboardModel, PanelModel } from '../state';
 import { getPanelChromeProps } from '../utils/getPanelChromeProps';
 
 import { PanelHeaderMenuWrapper } from './PanelHeader/PanelHeaderMenuWrapper';
-// import watermarkMaker from './watermarkMaker';
 interface OwnProps {
   panel: PanelModel;
   dashboard: DashboardModel;
@@ -190,35 +190,37 @@ export class PanelChromeAngularUnconnected extends PureComponent<Props, State> {
         <PanelHeaderMenuWrapper panel={panel} dashboard={dashboard} loadingState={data.state} />
       </div>
     );
-    // const panelContentStyle = window.graphWatermark
-    // ? {
-    //     backgroundImage: `url(${watermarkMaker(window.grafanaBootData.user.name)})`,
-    //     backgroundRepeat: 'repeat',
-    //     backgroundPosition: 'top',
-    //   }
-    // : {};
     return (
-      <PanelChrome
-        width={this.props.width}
-        height={this.props.height}
-        title={panelChromeProps.title}
-        loadingState={data.state}
-        statusMessage={errorMessage}
-        statusMessageOnClick={panelChromeProps.onOpenErrorInspect}
-        description={panelChromeProps.description}
-        titleItems={panelChromeProps.titleItems}
-        menu={this.props.hideMenu ? undefined : menu}
-        dragClass={panelChromeProps.dragClass}
-        dragClassCancel="grid-drag-cancel"
-        padding={panelChromeProps.padding}
-        hoverHeaderOffset={hoverHeaderOffset}
-        hoverHeader={panelChromeProps.hasOverlayHeader()}
-        displayMode={transparent ? 'transparent' : 'default'}
-        onCancelQuery={panelChromeProps.onCancelQuery}
-        onOpenMenu={panelChromeProps.onOpenMenu}
+      <Watermark
+        content={window.graphWatermark ? window.grafanaBootData?.user?.name : ''}
+        zIndex={1000}
+        gap={[200, 200]}
+        font={{
+          color: '#aaa',
+        }}
       >
-        {() => <div ref={(element) => (this.element = element)} className="panel-height-helper" />}
-      </PanelChrome>
+        <PanelChrome
+          width={this.props.width}
+          height={this.props.height}
+          title={panelChromeProps.title}
+          loadingState={data.state}
+          statusMessage={errorMessage}
+          statusMessageOnClick={panelChromeProps.onOpenErrorInspect}
+          description={panelChromeProps.description}
+          titleItems={panelChromeProps.titleItems}
+          menu={this.props.hideMenu ? undefined : menu}
+          dragClass={panelChromeProps.dragClass}
+          dragClassCancel="grid-drag-cancel"
+          padding={panelChromeProps.padding}
+          hoverHeaderOffset={hoverHeaderOffset}
+          hoverHeader={panelChromeProps.hasOverlayHeader()}
+          displayMode={transparent ? 'transparent' : 'default'}
+          onCancelQuery={panelChromeProps.onCancelQuery}
+          onOpenMenu={panelChromeProps.onOpenMenu}
+        >
+          {() => <div ref={(element) => (this.element = element)} className="panel-height-helper" />}
+        </PanelChrome>
+      </Watermark>
     );
   }
 }

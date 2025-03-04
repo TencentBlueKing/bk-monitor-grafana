@@ -354,9 +354,11 @@ const getStyles = (theme: GrafanaTheme2) => {
       border: `1px solid ${borderColor}`,
       position: 'relative',
       borderRadius: theme.shape.radius.default,
+      opacity: 0.8,
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
+      zIndex: 1,
 
       '> *': {
         zIndex: 0,

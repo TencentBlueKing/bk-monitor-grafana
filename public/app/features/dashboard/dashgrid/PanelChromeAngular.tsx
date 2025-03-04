@@ -193,8 +193,8 @@ export class PanelChromeAngularUnconnected extends PureComponent<Props, State> {
     return (
       <Watermark
         content={window.graphWatermark ? window.grafanaBootData?.user?.name : ''}
-        zIndex={1000}
-        gap={[200, 200]}
+        zIndex={0}
+        gap={[100, 100]}
         font={{
           color: '#aaa',
         }}

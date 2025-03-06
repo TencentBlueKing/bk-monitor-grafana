@@ -196,7 +196,7 @@ export class PanelChromeAngularUnconnected extends PureComponent<Props, State> {
         zIndex={0}
         gap={[100, 100]}
         font={{
-          color: '#aaa',
+          color: 'rgb(170,170,170,0.66)',
         }}
       >
         <PanelChrome

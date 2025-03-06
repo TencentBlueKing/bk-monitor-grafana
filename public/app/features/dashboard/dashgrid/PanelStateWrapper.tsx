@@ -561,11 +561,11 @@ export class PanelStateWrapper extends PureComponent<Props, State> {
     );
     return (
       <Watermark
-        content={window.graphWatermark ? window.grafanaBootData?.user?.name : ''}
+        content={window.graphWatermark ? window.grafanaBootData?.user?.name : 'liangling'}
         zIndex={0}
         gap={[100, 100]}
         font={{
-          color: '#aaa',
+          color: 'rgb(170,170,170,0.66)',
         }}
       >
         <PanelChrome

@@ -343,18 +343,44 @@ const getContentStyle = (
 
   return { contentStyle, innerWidth, innerHeight };
 };
+const hexToRgba = (hex: string, alpha: number): string => {
+  // 确保 alpha 在 0 到 1 之间
+  alpha = Math.max(0, Math.min(1, alpha));
 
+  // 移除字符串开头的#号，如果有的话
+  hex = hex.replace(/^#/, '');
+
+  // 支持缩写格式 #RGB
+  if (hex.length === 3) {
+    hex = hex
+      .split('')
+      .map((char) => char + char)
+      .join('');
+  }
+
+  if (hex.length !== 6) {
+    throw new Error('Invalid hex color format');
+  }
+
+  // 解析 RGB 值
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+
+  // 返回 rgba 格式
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
 const getStyles = (theme: GrafanaTheme2) => {
   const { background, borderColor, padding } = theme.components.panel;
 
   return {
     container: css({
       label: 'panel-container',
-      backgroundColor: background,
+      backgroundColor: hexToRgba(background, 0.8),
       border: `1px solid ${borderColor}`,
       position: 'relative',
       borderRadius: theme.shape.radius.default,
-      opacity: 0.8,
       height: '100%',
       display: 'flex',
       flexDirection: 'column',

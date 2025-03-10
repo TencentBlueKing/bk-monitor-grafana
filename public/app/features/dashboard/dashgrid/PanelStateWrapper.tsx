@@ -564,6 +564,10 @@ export class PanelStateWrapper extends PureComponent<Props, State> {
         content={window.graphWatermark ? window.grafanaBootData?.user?.name : 'liangling'}
         zIndex={0}
         gap={[100, 100]}
+        style={{
+          width: width + 'px',
+          height: height + 'px',
+        }}
         font={{
           color: 'rgb(170,170,170,0.66)',
         }}

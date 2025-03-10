@@ -190,6 +190,32 @@ export class PanelChromeAngularUnconnected extends PureComponent<Props, State> {
         <PanelHeaderMenuWrapper panel={panel} dashboard={dashboard} loadingState={data.state} />
       </div>
     );
+    const panelContent = (
+      <PanelChrome
+        width={this.props.width}
+        height={this.props.height}
+        title={panelChromeProps.title}
+        loadingState={data.state}
+        statusMessage={errorMessage}
+        statusMessageOnClick={panelChromeProps.onOpenErrorInspect}
+        description={panelChromeProps.description}
+        titleItems={panelChromeProps.titleItems}
+        menu={this.props.hideMenu ? undefined : menu}
+        dragClass={panelChromeProps.dragClass}
+        dragClassCancel="grid-drag-cancel"
+        padding={panelChromeProps.padding}
+        hoverHeaderOffset={hoverHeaderOffset}
+        hoverHeader={panelChromeProps.hasOverlayHeader()}
+        displayMode={transparent ? 'transparent' : 'default'}
+        onCancelQuery={panelChromeProps.onCancelQuery}
+        onOpenMenu={panelChromeProps.onOpenMenu}
+      >
+        {() => <div ref={(element) => (this.element = element)} className="panel-height-helper" />}
+      </PanelChrome>
+    );
+    if (!window.graphWatermark || !window.grafanaBootData?.user?.name) {
+      return panelContent;
+    }
     return (
       <Watermark
         content={window.graphWatermark ? window.grafanaBootData?.user?.name : ''}
@@ -203,27 +229,7 @@ export class PanelChromeAngularUnconnected extends PureComponent<Props, State> {
           color: 'rgb(170,170,170,0.66)',
         }}
       >
-        <PanelChrome
-          width={this.props.width}
-          height={this.props.height}
-          title={panelChromeProps.title}
-          loadingState={data.state}
-          statusMessage={errorMessage}
-          statusMessageOnClick={panelChromeProps.onOpenErrorInspect}
-          description={panelChromeProps.description}
-          titleItems={panelChromeProps.titleItems}
-          menu={this.props.hideMenu ? undefined : menu}
-          dragClass={panelChromeProps.dragClass}
-          dragClassCancel="grid-drag-cancel"
-          padding={panelChromeProps.padding}
-          hoverHeaderOffset={hoverHeaderOffset}
-          hoverHeader={panelChromeProps.hasOverlayHeader()}
-          displayMode={transparent ? 'transparent' : 'default'}
-          onCancelQuery={panelChromeProps.onCancelQuery}
-          onOpenMenu={panelChromeProps.onOpenMenu}
-        >
-          {() => <div ref={(element) => (this.element = element)} className="panel-height-helper" />}
-        </PanelChrome>
+        {panelContent}
       </Watermark>
     );
   }

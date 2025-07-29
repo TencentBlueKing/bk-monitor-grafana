@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="[[.User.Language]]">
   <head>
     [[ if and .CSPEnabled .IsDevelopmentEnv ]]
     <!-- Cypress overwrites CSP headers in HTTP requests, so this is required for e2e tests-->
-    <meta  http-equiv="Content-Security-Policy" content="[[.CSPContent]]"/>
+    <meta http-equiv="Content-Security-Policy" content="[[.CSPContent]]" />
     [[ end ]]
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -33,6 +33,32 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="msapplication-TileColor" content="#2b5797" />
     <meta name="msapplication-config" content="public/img/browserconfig.xml" />
+    <script>
+      const wrapHistoryMethod = (methodName) => {
+        const originalMethod = history[methodName];
+        return function (...args) {
+          const result = originalMethod.apply(this, args);
+          const event = new Event(methodName);
+          event.arguments = args;
+          window.dispatchEvent(event);
+          return result;
+        };
+      };
+      history.pushState = wrapHistoryMethod('pushState');
+      history.replaceState = wrapHistoryMethod('replaceState');
+      const sendLocationToParent = () => {
+        window.parent.postMessage(
+          {
+            pathname: location.pathname,
+            search: location.search,
+          },
+          '*'
+        );
+      };
+      ['popstate', 'replaceState', 'pushState'].forEach((eventName) => {
+        window.addEventListener(eventName, sendLocationToParent);
+      });
+    </script>
   </head>
 
   <body class="theme-[[ .ThemeType ]] [[.AppNameBodyClass]]">
@@ -324,14 +350,8 @@
       })(window, document, 'script', 'dataLayer', '[[.GoogleTagManagerId]]');
     </script>
     <!-- End Google Tag Manager -->
-    [[end]]
-
-    [[range $asset := .Assets.JSFiles]]
-      <script
-      nonce="[[$.Nonce]]"
-      src="[[$asset.FilePath]]"
-      type="text/javascript"
-    ></script>
+    [[end]] [[range $asset := .Assets.JSFiles]]
+    <script nonce="[[$.Nonce]]" src="[[$asset.FilePath]]" type="text/javascript"></script>
     [[end]]
 
     <script nonce="[[.Nonce]]">

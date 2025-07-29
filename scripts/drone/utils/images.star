@@ -15,7 +15,7 @@ images = {
     "node": "node:{}-alpine".format(nodejs_version),
     "cloudsdk": "google/cloud-sdk:431.0.0",
     "publish": "grafana/grafana-ci-deploy:1.3.3",
-    "alpine": "alpine:3.20.3",
+    "alpine": "alpine:3.21.3",
     "ubuntu": "ubuntu:22.04",
     "curl": "byrnedo/alpine-curl:0.1.8",
     "plugins_slack": "plugins/slack",
@@ -35,4 +35,6 @@ images = {
     "dockerize": "jwilder/dockerize:0.6.1",
     "shellcheck": "koalaman/shellcheck:stable",
     "rocky": "rockylinux:9",
+    "wine": "scottyhardy/docker-wine:stable-9.0",
+    "github_app_secret_writer": "us-docker.pkg.dev/grafanalabs-global/docker-deployment-tools-prod/github-app-secret-writer:2024-11-05-v11688112090.1-83920c59",
 }

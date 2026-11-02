@@ -13,7 +13,7 @@ COPY .yarn .yarn
 COPY packages packages
 COPY plugins-bundled plugins-bundled
 
-RUN yarn install
+RUN yarn install --immutable
 
 COPY tsconfig.json .eslintrc .editorconfig .browserslistrc .prettierrc.js babel.config.json .linguirc ./
 COPY public public

@@ -106,7 +106,7 @@ module.exports = {
       {
         test: /\.(svg|ico|jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|cur|ani|pdf)(\?.*)?$/,
         loader: 'file-loader',
-        options: { name: 'static/img/[name].[contenthash:8].[ext]' },
+        options: { name: 'static/img/[name].[sha256:contenthash:8].[ext]' },
       },
     ],
   },
